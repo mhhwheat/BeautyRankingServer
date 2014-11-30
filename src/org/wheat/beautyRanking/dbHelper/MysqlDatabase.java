@@ -6,7 +6,7 @@ import java.sql.DriverManager;
 public class MysqlDatabase implements BaseDataBase
 {
 	private String driver="com.mysql.jdbc.Driver";
-	private String url="jdbc:mysql://127.0.0.1:3306/beauty_ranking?characterEncoding=utf8";
+	private String url="jdbc:mysql://192.168.202.197:3306/beauty_ranking?characterEncoding=utf8";
 	private String user="root";
 	private String password="";
 	private Connection conn;
