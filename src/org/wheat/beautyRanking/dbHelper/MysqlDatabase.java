@@ -7,8 +7,8 @@ public class MysqlDatabase implements BaseDataBase
 {
 	private String driver="com.mysql.jdbc.Driver";
 	private String url="jdbc:mysql://192.168.202.197:3306/beauty_ranking?characterEncoding=utf8";
-	private String user="root";
-	private String password="";
+	private String user="myuser";
+	private String password="mypassword";
 	private Connection conn;
 	@Override
 	public Connection getConnetion() 
@@ -32,5 +32,10 @@ public class MysqlDatabase implements BaseDataBase
 		}
 		return conn;
 	}
-
+	public static void  Main(String[] args)
+	{
+		MysqlDatabase mydb = new MysqlDatabase();
+		mydb.getConnetion();
+	}
 }
+
