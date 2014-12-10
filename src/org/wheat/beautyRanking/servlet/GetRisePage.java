@@ -43,20 +43,7 @@ public class GetRisePage extends HttpServlet {
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		System.out.println("step in getRisePage servlet------------->");
-		/*
-		String parameters=request.getParameter("s");
-		Map< String, String> map=null;
-		try {
-			map=HttpDataLoaderServer.dencryptParamsFromGet(parameters);
-		} catch (Throwable e) {
-			e.printStackTrace();
-		}
-		if(map==null)
-		{
-			System.out.println("map is null");
-			return;
-		}
-		*/
+		
 		String firstIndex=request.getParameter("firstIndex");
 		String count=request.getParameter("count");
 		if(firstIndex==null||count==null)

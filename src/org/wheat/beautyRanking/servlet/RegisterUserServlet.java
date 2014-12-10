@@ -42,7 +42,7 @@ public class RegisterUserServlet extends HttpServlet {
 	 */
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
+/*
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
 		out.println("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">");
@@ -54,6 +54,32 @@ public class RegisterUserServlet extends HttpServlet {
 		out.println(", using the GET method");
 		out.println("  </BODY>");
 		out.println("</HTML>");
+		out.flush();
+		out.close();
+		*/
+		HashMap<String , String > postData=HttpDataLoaderServer.getParamsFromEntity(request);
+		if(postData==null)
+		{
+			//没收到客户端发来的数据
+		}
+		MysqlDBHelper helper=MysqlDBHelper.getInstance();
+		System.out.println("userPhoneNumber---------->"+postData.get("userPhoneNumber"));
+		System.out.println("password----------------->"+postData.get("password"));
+		System.out.println("nikeName----------------->"+postData.get("nikeName"));
+		System.out.println("school------------------->"+postData.get("school"));
+		System.out.println("admissionYear------------>"+postData.get("admissionYear"));
+		boolean isSuccess=helper.insertUser(postData);
+		UserRegisterJson json=new UserRegisterJson();
+		if(isSuccess)
+		{
+			json.setCode(1);
+		}
+		else
+		{
+			json.setCode(0);
+		}
+		PrintWriter out=response.getWriter();
+		out.print(HttpDataLoaderServer.toJson(json));
 		out.flush();
 		out.close();
 	}

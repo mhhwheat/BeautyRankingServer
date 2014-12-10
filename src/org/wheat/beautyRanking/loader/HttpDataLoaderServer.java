@@ -103,6 +103,7 @@ public class HttpDataLoaderServer
 	{
 		InputStream is=request.getInputStream();
 		int streamLength=request.getContentLength();
+		System.out.println("请求数据长度："+streamLength);
 		byte[] data=new byte[streamLength];
 		int count=0;
 		int len=0;

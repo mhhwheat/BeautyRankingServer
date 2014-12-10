@@ -3,20 +3,27 @@ package org.wheat.beautyRanking.entity;
 import org.wheat.beautyRanking.data.DataType;
 import org.wheat.beautyRanking.data.IData;
 
+import com.google.gson.annotations.SerializedName;
+
 
 public class Comment implements IData
 {
 	private static final long serialVersionUID = 1L;
 	private int dataType=DataType.ENTITY_COMMENT;
 	//照片ID
+	@SerializedName("photoId")
 	private int photoID;
 	//mmid
+	@SerializedName("beautyId")
 	private int beautyID;
 	//用户手机号
+	@SerializedName("userPhoneNumber")
 	private String userPhoneNumber;
 	//评论时间
+	@SerializedName("commentTime")
 	private String commentTime;
 	//评论的内容
+	@SerializedName("commentContent")
 	private String commentContent;
 	public Comment(int photoID,int beautyID,String userPhoneNumber,String commentTime,String commentContent)
 	{

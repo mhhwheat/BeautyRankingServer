@@ -1,45 +1,58 @@
 package org.wheat.beautyRanking.entity;
 
-import org.wheat.beautyRanking.data.DataType;
-import org.wheat.beautyRanking.data.IData;
 
-public class Photo implements IData
+import com.google.gson.annotations.SerializedName;
+public class Photo  
 {
-	private static final long serialVersionUID = 1L;
-	private int dataType=DataType.ENTITY_PHOTO;
+
+	//属于哪个beauty的beautyId
+	@SerializedName("beautyId")
+	private String beautyId;
 	//照片id
-	private int photoID;
+	@SerializedName("commentCount")
+	private int commentCount;
 	//mm的id
-	private int beautyID;
+	@SerializedName("praiseCount")
+	private int praiseCount;
 	//照片在本地的路径
+	@SerializedName("photoPath")
 	private String photoPath;
 	//用户手机号码(上传该照片的用户)
+	@SerializedName("userPhoneNumber")
 	private String userPhoneNumber;
 	//上传时间
+	@SerializedName("uploadTime")
 	private String uploadTime;
-	public Photo(int photoID,int beautyID,String photoPath,String userPhoneNumber,String uploadTime)
+	public Photo(){}
+	public Photo(int commentCount,int praiseCount,String photoPath,String userPhoneNumber,String uploadTime)
 	{
-		this.photoID=photoID;
-		this.beautyID=beautyID;
+		this.commentCount=commentCount;
+		this.praiseCount=praiseCount;
 		this.photoPath=photoPath;
 		this.userPhoneNumber=userPhoneNumber;
 		this.uploadTime=uploadTime;
 	}
-	public void setPhotoID(int photoID)
-	{
-		this.photoID=photoID;
+	public void setBeautyId(String beautyId){
+		this.beautyId=beautyId;
 	}
-	public int getPhotoID()
-	{
-		return this.photoID;
+	public String getBeautyId(){
+		return this.beautyId;
 	}
-	public void setBeautyID(int beautyID)
+	public void setPraiseCount(int praiseCount)
 	{
-		this.beautyID=beautyID;
+		this.praiseCount=praiseCount;
 	}
-	public int getBeautyID()
+	public int getPraiseCount()
 	{
-		return this.beautyID;
+		return this.praiseCount;
+	}
+	public void setCommentCount(int commentCount)
+	{
+		this.commentCount=commentCount;
+	}
+	public int getCommentCount()
+	{
+		return this.commentCount;
 	}
 	public void setPhotoPath(String photoPath)
 	{
@@ -64,11 +77,6 @@ public class Photo implements IData
 	public String getUploadTime()
 	{
 		return this.uploadTime;
-	}
-	@Override
-	public int getDataType() 
-	{
-		return dataType;
 	}
 	
 }

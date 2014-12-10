@@ -69,7 +69,7 @@ public class GetSumPage extends HttpServlet {
 			return;
 		}
 		String json=HttpDataLoaderServer.toJson(beautyIntroductionListJson);
-		String result=new String(json.getBytes("UTF-8"),"8859_1");
+		String result=new String(json.getBytes("UTF-8"),"8859_1");//以iso-8859-1编码取出再　转成UTF-8
 		PrintWriter out=response.getWriter();
 		out.print(result);
 		out.flush();

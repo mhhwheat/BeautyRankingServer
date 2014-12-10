@@ -94,6 +94,7 @@ public class BeautyRankingLogin extends HttpServlet
 		if(postData==null)
 		{
 			//没收到客户端发来的数据
+			System.out.println("没有收到客户端数据");
 		}
 		MysqlDBHelper helper=MysqlDBHelper.getInstance();
 		System.out.println("userPhoneNumber---------->"+postData.get("userPhoneNumber"));
