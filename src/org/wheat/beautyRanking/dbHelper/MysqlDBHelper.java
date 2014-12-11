@@ -475,7 +475,7 @@ public class MysqlDBHelper
 		try
 		{
 			conn=database.getConnetion();
-			String querySql="select beauty_id , true_name ,school, description , avatar_path from beauty order by prase_times desc limit ?,?";
+			String querySql="select beauty_id , true_name ,school, description , avatar_path from beauty order by praise_times desc limit ?,?";
 			ps=conn.prepareStatement(querySql);
 			ps.setInt(1, firstIndex);
 			ps.setInt(2, count);
