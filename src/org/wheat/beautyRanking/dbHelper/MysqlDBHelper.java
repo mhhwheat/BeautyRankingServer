@@ -15,15 +15,18 @@ import org.wheat.beautyRanking.entity.BeautyDetail;
 import org.wheat.beautyRanking.entity.BeautyIntroduction;
 import org.wheat.beautyRanking.entity.BeautyIntroductionList;
 import org.wheat.beautyRanking.entity.Comment;
+import org.wheat.beautyRanking.entity.ConstantValue;
 import org.wheat.beautyRanking.entity.Photo;
 import org.wheat.beautyRanking.entity.PhotoList;
 import org.wheat.beautyRanking.entity.Photo_huahua;
+import org.wheat.beautyRanking.entity.Praise;
 import org.wheat.beautyRanking.entity.PraiseRecord;
 import org.wheat.beautyRanking.entity.RequestRegisterUser;
 import org.wheat.beautyRanking.entity.UserLogin;
 import org.wheat.beautyRanking.entity.json.BeautyDetailJson;
 import org.wheat.beautyRanking.entity.json.BeautyIntroductionListJson;
 import org.wheat.beautyRanking.entity.json.PhotoListJson;
+import org.wheat.beautyRanking.loader.DateFormatTools;
 import org.wheat.beautyRanking.loader.HttpDataLoaderServer;
 
 
@@ -241,7 +244,7 @@ public class MysqlDBHelper
 			ps.setInt(1, comment.getPhotoID());
 			ps.setInt(2, comment.getBeautyID());
 			ps.setString(3, comment.getUserPhoneNumber());
-			ps.setString(4, comment.getCommentTime());
+			ps.setDate(4, DateFormatTools.utilDate2SqlDate(comment.getCommentTime()));
 			ps.setString(5, comment.getCommentContent());
 			int resutl=ps.executeUpdate();
 			if(resutl>0)
@@ -276,7 +279,7 @@ public class MysqlDBHelper
 			java.sql.PreparedStatement ps=conn.prepareStatement(insql);
 			ps.setString(1, praiseRecord.getUserPhoneNumber());
 			ps.setInt(2, praiseRecord.getBeauty());
-			ps.setString(3, praiseRecord.getPraiseTime());
+			ps.setDate(3, DateFormatTools.utilDate2SqlDate(praiseRecord.getPraiseTime()));
 			int resutl=ps.executeUpdate();
 			if(resutl>0)
 				return true;
@@ -554,7 +557,7 @@ public class MysqlDBHelper
 				temp.setPraiseCount(rs.getInt("praise_count"));
 				temp.setPhotoPath(rs.getString("photo_path"));
 				temp.setUserPhoneNumber(rs.getString("user_phone_number"));
-				temp.setUploadTime(rs.getString("upload_time"));
+				temp.setUploadTime(rs.getDate("upload_time"));
 				list.add(temp);
 			}
 		}catch(Exception e){
@@ -783,11 +786,11 @@ public class MysqlDBHelper
 					+ "upload_time,comment_count,praise_count) "
 					+ "values (?,?,?,?,?,?)";
 			ps=conn.prepareStatement(querySql);
-			ps.setString(1, photo.getBeautyId());
+			ps.setInt(1, photo.getBeautyId());
 			ps.setString(2, photo.getPhotoPath());
 			ps.setString(3,photo.getUserPhoneNumber());
 			//String TO datetime
-			ps.setString(4, photo.getUploadTime());//2014-11-01 12:00:00
+			ps.setDate(4, DateFormatTools.utilDate2SqlDate(photo.getUploadTime()));//2014-11-01 12:00:00
 			ps.setInt(5,photo.getCommentCount());
 			ps.setInt(6, photo.getPraiseCount());
 			successCount=ps.executeUpdate();
@@ -819,10 +822,10 @@ public class MysqlDBHelper
 		}
 		if(successCount>0){
 			System.out.println("success!");
-			return 1;
+			return ConstantValue.InsertDbSuccess;
 		}else{
 			System.out.println("faild");
-			return -1;
+			return ConstantValue.InsertDbFailed;
 		}
 	}
 	
@@ -859,34 +862,32 @@ public class MysqlDBHelper
 	 */
 	public int uploadNewBeauty(BeautyDetail oneBeauty)
 	{
+		System.out.println("in uploadnewbeauyt");
 		Connection conn=null;
 		PreparedStatement ps=null;
-		ArrayList<BeautyIntroduction> list=new ArrayList<BeautyIntroduction>();
-		BeautyIntroductionList beautyList;
-		BeautyIntroductionListJson beautyIntroductionListJson=null;
+
 		int  insertBeautyCount=-1;
-		int  insertPhotoCount=-1;
 		try
 		{
 			conn=database.getConnetion();
 			String querySql="insert into beauty (avatar_path ,true_name,user_phone_number,"
-					+ "prase_times,school,admission_year,birthday,constellation,description,"
+					+ "praise_times,school,admission_year,birthday,constellation,description,"
 					+ "create_time,lat,lng) "
 					+ "values (?,?,?,?,?,?,?,?,?,?,?,?)";
 			ps=conn.prepareStatement(querySql);
 			ps.setString(1, oneBeauty.getAvatarPath());
 			ps.setString(2, oneBeauty.getTrueName());
 			ps.setString(3,oneBeauty.getUserPhoneNumber());//创建者的user_phone_number
-			ps.setString(4, oneBeauty.getPraseTimes());
+			ps.setInt(4, oneBeauty.getPraiseTimes());
 			ps.setString(5,oneBeauty.getSchool());
 			ps.setString(6,oneBeauty.getAdmissionYear()); 
 			
 			ps.setString(7, oneBeauty.getBirthday());
 			ps.setString(8, oneBeauty.getConstellation());
 			ps.setString(9,oneBeauty.getDescription());
-			ps.setString(10, oneBeauty.getCreateTime());
-			ps.setString(11,oneBeauty.getLat());
-			ps.setString(12, oneBeauty.getLng());
+			ps.setDate(10, DateFormatTools.utilDate2SqlDate(oneBeauty.getCreateTime()));
+			ps.setDouble(11,oneBeauty.getLat());
+			ps.setDouble(12, oneBeauty.getLng());
 			insertBeautyCount=ps.executeUpdate();
 
 			
@@ -917,10 +918,10 @@ public class MysqlDBHelper
 		}
 		if(insertBeautyCount>0){
 			System.out.println("success!");
-			return 1;//插入成功
+			return ConstantValue.InsertDbSuccess;//插入成功
 		}else{
 			System.out.println("faild");
-			return 0;//插入失败
+			return ConstantValue.InsertDbFailed;//插入失败
 		}
 	}
 	
@@ -932,13 +933,13 @@ public class MysqlDBHelper
 	 * @param values 需要插入的数据
 	 * @return int 插入数据库的代码
 	 */
-	public int updateComment(String photoId,Connection conn,PreparedStatement ps)
+	public int updateCommentCount(int photoId,Connection conn,PreparedStatement ps)
 	{
 		int  updateCount=-1;
 		try
 		{
 			String querySql="update photo set comment_count=comment_count+1 where photo_id =?";
-			ps.setString(1, photoId);
+			ps.setInt(1, photoId);
 			updateCount=ps.executeUpdate();
 			
 
@@ -948,10 +949,10 @@ public class MysqlDBHelper
 		
 		if(updateCount>0){
 			System.out.println("success!");
-			return 1;//插入成功
+			return ConstantValue.updateCommentCountSuccess;//插入成功
 		}else{
 			System.out.println("faild");
-			return 0;//插入失败
+			return ConstantValue.updateCommentCountFailed;//插入失败
 		}
 	}
 	
@@ -960,7 +961,7 @@ public class MysqlDBHelper
 	 * @param values 需要插入的数据
 	 * @return int 插入数据库的代码
 	 */
-	public int insertOneComment(HashMap<String,String>values)
+	public int uploadOneComment(Comment comment)
 	{
 		Connection conn=null;
 		PreparedStatement ps=null;
@@ -973,13 +974,16 @@ public class MysqlDBHelper
 					+ "comment_time,comment_content) "
 					+ "values (?,?,?,?)";
 			ps=conn.prepareStatement(querySql);
-			ps.setString(1, values.get("photo_id"));
-			ps.setString(2, values.get("user_phone_number"));
-			ps.setString(3,values.get("comment_time"));
-			ps.setString(4, values.get("comment_content"));
+			ps.setInt(1, comment.getPhotoID());
+			ps.setString(2, comment.getUserPhoneNumber());
+			ps.setDate(3,DateFormatTools.utilDate2SqlDate(comment.getCommentTime()));
+			ps.setString(4, comment.getCommentContent());
 			
 			insertCommentCount=ps.executeUpdate();
-			updateCommentCount=updateComment(values.get("photo_id"),conn,ps);
+			if(insertCommentCount>0)
+				updateCommentCount=updateCommentCount(comment.getPhotoID(),conn,ps);
+			else
+				return ConstantValue.InsertDbFailed;
 			
 
 		}catch(Exception e){
@@ -1007,12 +1011,15 @@ public class MysqlDBHelper
 				}
 			}
 		}
-		if(insertCommentCount>0&&updateCommentCount>0){
+		/**
+		 * 这里如果插入失败，上面的插入因该重做redo，暂时不考虑
+		 */
+		if(updateCommentCount>0){
 			System.out.println("success!");
-			return 1;//插入成功
+			return ConstantValue.InsertDbSuccess;//插入成功
 		}else{
 			System.out.println("faild");
-			return 0;//插入失败
+			return ConstantValue.InsertDbFailed;//插入失败
 		}
 	}
 	
@@ -1023,7 +1030,7 @@ public class MysqlDBHelper
 	 * @param values 需要插入的数据
 	 * @return int 插入数据库的代码
 	 */
-	public int insertOnePraise(HashMap<String,String>values)
+	public int uploadPraise(Praise praise)
 	{
 		Connection conn=null;
 		PreparedStatement ps=null;
@@ -1036,17 +1043,17 @@ public class MysqlDBHelper
 					+ "photo_id) "
 					+ "values (?,?,?)";
 			ps=conn.prepareStatement(querySql);
-			ps.setString(1, values.get("user_phone_number"));
-			ps.setString(2, values.get("praise_time"));
-			ps.setString(3,values.get("photo_id"));
+			ps.setString(1, praise.getUserPhoneNumber());
+			ps.setDate(2, DateFormatTools.utilDate2SqlDate(praise.getPraiseTime()));
+			ps.setInt(3,praise.getPhotoId());
 			
 			insertCommentCount=ps.executeUpdate();
 			String updatePraiseCountSql="update photo set praise_count=praise_count+1 where photo_id =?";
-			ps.setString(1, values.get("photo_id"));
+			ps.setInt(1, praise.getPhotoId());
 			updatePraiseCount=ps.executeUpdate();
 			//更新总的praise_count
 			String updateBeautyCountSql="update beauty set praise_count=praise_count+1 where beauty_id =?";
-			ps.setString(1, values.get("beautyId"));
+			ps.setInt(1, praise.getBeautyId());
 			updatePraiseCount=ps.executeUpdate();
 
 		}catch(Exception e){
@@ -1089,7 +1096,7 @@ public class MysqlDBHelper
 	 * @param beautyId
 	 * @return
 	 */
-	public  BeautyDetail getBeautyDetail(String beautyId){
+	public  BeautyDetail getBeautyDetail(int beautyId){
 		
 		Connection conn=null;
 		PreparedStatement ps=null;
@@ -1099,11 +1106,11 @@ public class MysqlDBHelper
 		{
 			conn=database.getConnetion();
 			
-			String querySql="select beauty_id , avatar_path ,user_phone_number, prase_times ,"
+			String querySql="select beauty_id , avatar_path ,user_phone_number, praise_times ,"
 					+ " school ,admission_year,birthday, constellation,description,create_time  "
 					+ "from beauty where beautyId = ?";
 			ps=conn.prepareStatement(querySql);
-			ps.setString(1, beautyId);
+			ps.setInt(1, beautyId);
 			ResultSet rs=ps.executeQuery();
 			while(rs.next())
 			{
@@ -1111,14 +1118,14 @@ public class MysqlDBHelper
 				temp.setBeautyId(beautyId);
 				temp.setAvatarPath(rs.getString("avatar_path"));
 				temp.setUserPhoneNumber(rs.getString("user_phone_number"));
-				temp.setPraseTimes(rs.getString("prase_times"));
+				temp.setPraiseTimes(rs.getInt("praise_times"));
 				
 				temp.setSchool(rs.getString("school"));
 				temp.setAdmissionYear(rs.getString("admission_year"));
 				temp.setBirthday(rs.getString("birthday"));
 				temp.setConstellation(rs.getString("constellation"));
 				temp.setDescription(rs.getString("description"));
-				temp.setCreateTime(rs.getString("create_time"));
+				temp.setCreateTime(rs.getDate("create_time"));
 				
 			}
 			
@@ -1316,7 +1323,15 @@ public class MysqlDBHelper
 		}
 		return resultCode;
 	}
-	
+	/**
+	 * 
+	* @Description: TODO 更新特定的beauty项目，其他没有更行的设置为null
+	* @author hogachen   
+	* @date 2014年12月11日 下午9:37:39 
+	* @version V1.0  
+	* @param beautyDetail
+	* @return
+	 */
 	public int updataBeautyInfo(BeautyDetail beautyDetail){
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -1330,15 +1345,17 @@ public class MysqlDBHelper
 					+ "admission_year=?,"
 					+ "birthday=?,"
 					+ "constellation=?,"
-					+ "description=?";
+					+ "description=?"
+					+ "where beauty_id='?'";
 			ps=conn.prepareStatement(sql);
 			ps.setString(1, beautyDetail.getTrueName());
 			ps.setString(2, beautyDetail.getUserPhoneNumber());
 			ps.setString(3, beautyDetail.getSchool());
 			ps.setString(4, beautyDetail.getAdmissionYear());
-			ps.setString(5,beautyDetail.getBeautyId());
+			ps.setInt(5,beautyDetail.getBeautyId());
 			ps.setString(6, beautyDetail.getConstellation());
 			ps.setString(7, beautyDetail.getDescription());
+			ps.setInt(8, beautyDetail.getBeautyId());
 			resultCode = ps.executeUpdate();
 		}catch (Exception e){
 			e.printStackTrace();
@@ -1364,6 +1381,10 @@ public class MysqlDBHelper
 				}
 			}
 		}
-		return resultCode ;
+		if(resultCode >0){
+			return ConstantValue.InsertDbSuccess;
+		}else{
+			return ConstantValue.InsertDbFailed;
+		}
 	}
 }
