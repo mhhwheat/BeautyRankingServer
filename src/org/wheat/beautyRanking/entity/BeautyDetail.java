@@ -1,5 +1,9 @@
 package org.wheat.beautyRanking.entity;
 
+
+
+import java.util.Date;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -11,21 +15,21 @@ public class BeautyDetail
 	 * beauty的创建者电话号码
 	 */
 	@SerializedName("createTime")
-	private String mCreateTime;
+	private Date mCreateTime;
 	
 	/*
 	 * 该beauty被赞的次数
 	 */
 	@Expose 
 	@SerializedName("lat")
-	private String mLat;
+	private double mLat;
 	
 	/*
 	 * 该beauty的年级
 	 */
 	@Expose 
 	@SerializedName("lng")
-	private String mLng;
+	private double mLng;
 	
 	/*
 	 * beauty的创建者电话号码
@@ -37,8 +41,8 @@ public class BeautyDetail
 	 * 该beauty被赞的次数
 	 */
 	@Expose 
-	@SerializedName("praseTimes")
-	private String mPraseTimes;
+	@SerializedName("praiseTimes")
+	private int mPraiseTimes;
 	
 	/*
 	 * 该beauty的年级
@@ -87,15 +91,15 @@ public class BeautyDetail
 	
 	@Expose
 	@SerializedName("beautyId")
-	String mBeautyId;
+	private int  mBeautyId;
 	
 	
-	public void setBeautyId(String BeautyId)
+	public void setBeautyId(int BeautyId)
 	{
 		this.mBeautyId=BeautyId;
 	}
 	
-	public String getBeautyId()
+	public int getBeautyId()
 	{
 		return this.mBeautyId;
 	}
@@ -109,14 +113,14 @@ public class BeautyDetail
 		return this.mUserPhoneNumber;
 	}
 	
-	public void setPraseTimes(String mPraseTimes)
+	public void setPraiseTimes(int mPraiseTimes)
 	{
-		this.mPraseTimes=mPraseTimes;
+		this.mPraiseTimes=mPraiseTimes;
 	}
 	
-	public String getPraseTimes()
+	public int getPraiseTimes()
 	{
-		return this.mPraseTimes;
+		return this.mPraiseTimes;
 	}
 	
 	
@@ -192,31 +196,31 @@ public class BeautyDetail
 	{
 		return this.mAvatarPath;
 	}
-	public void setCreateTime(String CreateTime)
+	public void setCreateTime(Date CreateTime)
 	{
 		this.mCreateTime=CreateTime;
 	}
 	
-	public String getCreateTime()
+	public Date getCreateTime()
 	{
 		return this.mCreateTime;
 	}
-	public void setLat(String Lat)
+	public void setLat(double Lat)
 	{
 		this.mLat=Lat;
 	}
 	
-	public String getLat()
+	public double getLat()
 	{
 		return this.mLat;
 	}
 	
-	public void setLng(String mLngs)
+	public void setLng(double mLngs)
 	{
 		this.mLng=mLng;
 	}
 	
-	public String getLng()
+	public double getLng()
 	{
 		return this.mLng;
 	}

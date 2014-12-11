@@ -13,7 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.wheat.beautyRanking.dbHelper.MysqlDBHelper;
 import org.wheat.beautyRanking.entity.Comment;
 import org.wheat.beautyRanking.entity.ConstantValue;
+import org.wheat.beautyRanking.entity.Praise;
 import org.wheat.beautyRanking.entity.json.CommentJson;
+import org.wheat.beautyRanking.loader.JsonStreamToObject;
 
 import com.google.gson.Gson;
 
@@ -36,19 +38,19 @@ public class UploadPraise extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		System.out.println("in server dopost");
-		HashMap<String,String> values = new HashMap<String,String>();
-		values.put("userPhoneNumber", request.getParameter("userPhoneNumber"));
-		values.put("praiseTime",request.getParameter("praiseTime"));
-		values.put("photoId", request.getParameter("photoId"));
-		values.put("beautyId", request.getParameter("beautyId"));
-		System.out.println(values.toString());
-		MysqlDBHelper helper = MysqlDBHelper.getInstance();
-		int code = helper.insertOnePraise(values);
-		if (code ==-1){
-			response.setStatus(ConstantValue.ServerDataNotGet);
-			return;
-		}
+//		System.out.println("in server dopost");
+//		HashMap<String,String> values = new HashMap<String,String>();
+//		values.put("userPhoneNumber", request.getParameter("userPhoneNumber"));
+//		values.put("praiseTime",request.getParameter("praiseTime"));
+//		values.put("photoId", request.getParameter("photoId"));
+//		values.put("beautyId", request.getParameter("beautyId"));
+//		System.out.println(values.toString());
+//		MysqlDBHelper helper = MysqlDBHelper.getInstance();
+//		int code = helper.uploadPraise(values);
+//		if (code ==-1){
+//			response.setStatus(ConstantValue.ServerDataNotGet);
+//			return;
+//		}
 	}
 
 	/**
@@ -56,20 +58,15 @@ public class UploadPraise extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		System.out.println("in server dopost");
-		HashMap<String,String> values = new HashMap<String,String>();
-		values.put("userPhoneNumber", request.getParameter("userPhoneNumber"));
-		values.put("praiseTime",request.getParameter("praiseTime"));
-		values.put("photoId", request.getParameter("phoneId"));
-		values.put("beautyId", request.getParameter("beautyId"));
-		System.out.println(values.toString());
-//		MysqlDBHelper helper = MysqlDBHelper.getInstance();
-//		int code = helper.insertOnePraise(values);
-		int code=1;
-		if (code ==-1){
-			response.setStatus(500);
+		Praise praise = (Praise)JsonStreamToObject.jsonStreamToObject(request, Praise.class);
+		if(praise==null){
+			response.setStatus(ConstantValue.ClientParameterErr);
 			return;
 		}
+		MysqlDBHelper dbHelper = MysqlDBHelper.getInstance();
+		int code =dbHelper.uploadPraise(praise);
+		response.setStatus(code);
+		return;
 	}
 
 }

@@ -1,19 +1,23 @@
 package org.wheat.beautyRanking.entity;
 
 
+
+
+import java.util.Date;
+
 import com.google.gson.annotations.SerializedName;
 public class Photo  
 {
 
 	//属于哪个beauty的beautyId
 	@SerializedName("beautyId")
-	private String beautyId;
+	private int beautyId;
 	//照片id
 	@SerializedName("commentCount")
-	private int commentCount;
+	private int commentCount=0;
 	//mm的id
 	@SerializedName("praiseCount")
-	private int praiseCount;
+	private int praiseCount=0;
 	//照片在本地的路径
 	@SerializedName("photoPath")
 	private String photoPath;
@@ -22,9 +26,9 @@ public class Photo
 	private String userPhoneNumber;
 	//上传时间
 	@SerializedName("uploadTime")
-	private String uploadTime;
+	private Date uploadTime;
 	public Photo(){}
-	public Photo(int commentCount,int praiseCount,String photoPath,String userPhoneNumber,String uploadTime)
+	public Photo(int commentCount,int praiseCount,String photoPath,String userPhoneNumber,Date uploadTime)
 	{
 		this.commentCount=commentCount;
 		this.praiseCount=praiseCount;
@@ -32,10 +36,10 @@ public class Photo
 		this.userPhoneNumber=userPhoneNumber;
 		this.uploadTime=uploadTime;
 	}
-	public void setBeautyId(String beautyId){
+	public void setBeautyId(int beautyId){
 		this.beautyId=beautyId;
 	}
-	public String getBeautyId(){
+	public int getBeautyId(){
 		return this.beautyId;
 	}
 	public void setPraiseCount(int praiseCount)
@@ -70,11 +74,11 @@ public class Photo
 	{
 		return this.userPhoneNumber;
 	}
-	public void setUploadTime(String uploadTime)
+	public void setUploadTime(Date uploadTime)
 	{
 		this.uploadTime=uploadTime;
 	}
-	public String getUploadTime()
+	public Date getUploadTime()
 	{
 		return this.uploadTime;
 	}

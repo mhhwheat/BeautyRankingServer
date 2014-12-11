@@ -1,5 +1,7 @@
 package org.wheat.beautyRanking.entity;
 
+import java.util.Date;
+
 import org.wheat.beautyRanking.data.DataType;
 import org.wheat.beautyRanking.data.IData;
 
@@ -12,7 +14,7 @@ public class PraiseRecord implements IData
 	//mm的id
 	private int beautyID;
 	//赞的事件
-	private String praiseTime;
+	private Date praiseTime;
 	public void setUserPhoneNumber(String userPhoneNumber)
 	{
 		this.userPhoneNumber=userPhoneNumber;
@@ -29,11 +31,11 @@ public class PraiseRecord implements IData
 	{
 		return this.beautyID;
 	}
-	public void setPraiseTime(String praiseTime)
+	public void setPraiseTime(Date praiseTime)
 	{
 		this.praiseTime=praiseTime;
 	}
-	public String getPraiseTime()
+	public Date getPraiseTime()
 	{
 		return this.praiseTime;
 	}

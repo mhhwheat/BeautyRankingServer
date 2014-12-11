@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.wheat.beautyRanking.dbHelper.MysqlDBHelper;
 import org.wheat.beautyRanking.entity.BeautyDetail;
 import org.wheat.beautyRanking.entity.ConstantValue;
+import org.wheat.beautyRanking.loader.JsonStreamToObject;
 
 /**
  * @deprecated 任何人都可以 更新某个beauty下的信息？？
@@ -56,6 +57,15 @@ public class UpdateBeautyInfo extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		BeautyDetail oneBeauty = (BeautyDetail)JsonStreamToObject.jsonStreamToObject(request, BeautyDetail.class);
+		if(oneBeauty==null){
+			response.setStatus(ConstantValue.ClientParameterErr);
+			return;
+		}
+		MysqlDBHelper dbHelper = MysqlDBHelper.getInstance();
+		int code =dbHelper.updataBeautyInfo(oneBeauty);
+		response.setStatus(code);
+		return;
 	}
 
 }

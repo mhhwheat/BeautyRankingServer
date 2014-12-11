@@ -1,6 +1,7 @@
 package org.wheat.beautyRanking.servlet;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -10,6 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.wheat.beautyRanking.dbHelper.MysqlDBHelper;
 import org.wheat.beautyRanking.entity.BeautyDetail;
 import org.wheat.beautyRanking.entity.BeautyIntroduction;
+import org.wheat.beautyRanking.entity.ConstantValue;
+import org.wheat.beautyRanking.loader.JsonStreamToObject;
 
 /**
  * @author hogachen
@@ -25,6 +28,7 @@ public class UploadBeautyInfo extends HttpServlet {
 	public UploadBeautyInfo() {
 		super();
 		// TODO Auto-generated constructor stub
+		
 	}
 
 	/**
@@ -41,18 +45,17 @@ public class UploadBeautyInfo extends HttpServlet {
 		oneBeauty.setAvatarPath(request.getParameter("avatarPath"));
 		oneBeauty.setDescription(request.getParameter("description"));
 		oneBeauty.setUserPhoneNumber(request.getParameter("userPhoneNumber"));
-		oneBeauty.setPraseTimes(request.getParameter("praseTimes"));
+		oneBeauty.setPraiseTimes(Integer.parseInt(request.getParameter("praseTimes")));
 		oneBeauty.setAdmissionYear(request.getParameter("admissionYear"));
 		oneBeauty.setBirthday(request.getParameter("birthday"));
 		oneBeauty.setConstellation(request.getParameter("constellation"));
-//		MysqlDBHelper dbHelper = MysqlDBHelper.getInstance();
-//		int code =dbHelper.uploadNewBeauty(oneBeauty);
-//		if(code==-1){
-//			response.setStatus(500);//服务器错误
-//			return;
-//		}
-		System.out.println(oneBeauty.getAdmissionYear());
-		System.out.println(oneBeauty.getSchool());
+		oneBeauty.setLat(Double.parseDouble(request.getParameter("lat")));
+		oneBeauty.setLng(Double.parseDouble(request.getParameter("lng")));
+		MysqlDBHelper dbHelper = MysqlDBHelper.getInstance();
+		int code =dbHelper.uploadNewBeauty(oneBeauty);
+		response.setStatus(code);
+		return;
+		
 	}
 
 	/**
@@ -62,23 +65,15 @@ public class UploadBeautyInfo extends HttpServlet {
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		BeautyDetail oneBeauty = new BeautyDetail();
-
-		oneBeauty.setTrueName(request.getParameter("beautyName"));
-		oneBeauty.setSchool(request.getParameter("school"));
-		oneBeauty.setAvatarPath(request.getParameter("avatarPath"));
-		oneBeauty.setDescription(request.getParameter("description"));
-		oneBeauty.setUserPhoneNumber(request.getParameter("userPhoneNumber"));
-		oneBeauty.setPraseTimes(request.getParameter("praseTimes"));
-		oneBeauty.setAdmissionYear(request.getParameter("admissionYear"));
-		oneBeauty.setBirthday(request.getParameter("birthday"));
-		oneBeauty.setConstellation(request.getParameter("constellation"));
-		MysqlDBHelper dbHelper = MysqlDBHelper.getInstance();
-		int code =dbHelper.uploadNewBeauty(oneBeauty);
-		if(code==-1){
-			response.setStatus(500);//服务器错误
+		BeautyDetail oneBeauty = (BeautyDetail)JsonStreamToObject.jsonStreamToObject(request, BeautyDetail.class);
+		if(oneBeauty==null){
+			response.setStatus(ConstantValue.ClientParameterErr);
 			return;
 		}
-		
+		MysqlDBHelper dbHelper = MysqlDBHelper.getInstance();
+		int code =dbHelper.uploadNewBeauty(oneBeauty);
+		response.setStatus(code);
+		return;
+
 	}
 }

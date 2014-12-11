@@ -1,5 +1,7 @@
 package org.wheat.beautyRanking.entity;
 
+import java.util.Date;
+
 import org.wheat.beautyRanking.data.DataType;
 import org.wheat.beautyRanking.data.IData;
 
@@ -21,11 +23,11 @@ public class Comment implements IData
 	private String userPhoneNumber;
 	//评论时间
 	@SerializedName("commentTime")
-	private String commentTime;
+	private Date commentTime;
 	//评论的内容
 	@SerializedName("commentContent")
 	private String commentContent;
-	public Comment(int photoID,int beautyID,String userPhoneNumber,String commentTime,String commentContent)
+	public Comment(int photoID,int beautyID,String userPhoneNumber,Date commentTime,String commentContent)
 	{
 		this.photoID=photoID;
 		this.beautyID=beautyID;
@@ -57,11 +59,11 @@ public class Comment implements IData
 	{
 		return this.userPhoneNumber;
 	}
-	public void setCommentTime(String commentTime)
+	public void setCommentTime(Date commentTime)
 	{
 		this.commentTime=commentTime;
 	}
-	public String getCommentTime()
+	public Date getCommentTime()
 	{
 		return this.commentTime;
 	}

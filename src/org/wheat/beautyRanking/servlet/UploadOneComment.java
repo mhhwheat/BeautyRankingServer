@@ -10,6 +10,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.wheat.beautyRanking.dbHelper.MysqlDBHelper;
+import org.wheat.beautyRanking.entity.Comment;
+import org.wheat.beautyRanking.entity.ConstantValue;
+import org.wheat.beautyRanking.entity.Photo;
+import org.wheat.beautyRanking.loader.JsonStreamToObject;
 
 /**
  * Servlet implementation class UploadOneComment
@@ -50,17 +54,15 @@ public class UploadOneComment extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		HashMap<String,String> values = new HashMap<String,String>();
-		values.put("photoId", request.getParameter("photoId"));
-		values.put("userPhoneNumber",request.getParameter("userPhoneNumber"));
-		values.put("commentTime", request.getParameter("commentTime"));
-		values.put("commentContent", request.getParameter("commentContent"));
-//		MysqlDBHelper helper = MysqlDBHelper.getInstance();
-//		int code = helper.insertOneComment(values);
-//		if (code ==-1){
-//			response.setStatus(500);
-//			return;
-//		}
+		Comment comment = (Comment)JsonStreamToObject.jsonStreamToObject(request, Comment.class);
+		if(comment==null){
+			response.setStatus(ConstantValue.ClientParameterErr);
+			return;
+		}
+		MysqlDBHelper dbHelper = MysqlDBHelper.getInstance();
+		int code =dbHelper.uploadOneComment(comment);
+		response.setStatus(code);
+		return;
 	}
 
 }

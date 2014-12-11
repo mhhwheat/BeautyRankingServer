@@ -35,7 +35,7 @@ public class GetBeautyDetail extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		String beautyId = request.getParameter("beautyId");
+		int beautyId = Integer.parseInt(request.getParameter("beautyId"));
 		MysqlDBHelper helper = MysqlDBHelper.getInstance();
 		BeautyDetail beautyDetail = helper.getBeautyDetail(beautyId);
 		if(beautyDetail==null){
