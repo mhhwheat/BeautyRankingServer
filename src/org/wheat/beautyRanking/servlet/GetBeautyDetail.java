@@ -10,13 +10,17 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.wheat.beautyRanking.dbHelper.MysqlDBHelper;
 import org.wheat.beautyRanking.entity.BeautyDetail;
+import org.wheat.beautyRanking.entity.ConstantValue;
 import org.wheat.beautyRanking.entity.json.BeautyDetailJson;
 import org.wheat.beautyRanking.loader.HttpDataLoaderServer;
 
 /**
- * @author hogachen
- * @deprecated 当点击进入某个beauty时，显示该beauty的详细信息
- * Servlet implementation class GetBeautyDetail
+ * 
+* @ClassName: GetBeautyDetail 
+* @Description: TODO 当点击进入某个beauty时，显示该beauty的详细信息
+* @author hogachen
+* @date 2014年12月12日 下午3:46:52 
+*
  */
 public class GetBeautyDetail extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -30,7 +34,7 @@ public class GetBeautyDetail extends HttpServlet {
     }
 
 	/**
-	 * @deprecated 如果服务器数据库不能获取到数据，返回500错误代码
+	 * @description 如果服务器数据库不能获取到数据，返回500错误代码
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -39,12 +43,11 @@ public class GetBeautyDetail extends HttpServlet {
 		MysqlDBHelper helper = MysqlDBHelper.getInstance();
 		BeautyDetail beautyDetail = helper.getBeautyDetail(beautyId);
 		if(beautyDetail==null){
-			response.setStatus(500);
+			response.setStatus(ConstantValue.getDataFailed);
 			return;
 		}
-		BeautyDetailJson beautyDetailJson = new BeautyDetailJson();
-		beautyDetailJson.setData(beautyDetail);
-		String json=HttpDataLoaderServer.toJson(beautyDetailJson);
+		
+		String json=HttpDataLoaderServer.toJson(beautyDetail);
 		String responseData= new String(json.getBytes("UTF-8"),"8859_1");
 		PrintWriter out = response.getWriter();
 		out.print(responseData);

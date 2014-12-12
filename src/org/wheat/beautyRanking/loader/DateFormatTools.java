@@ -21,4 +21,7 @@ public class DateFormatTools {
 	public static java.sql.Date utilDate2SqlDate(java.util.Date utilDate){
 		return new java.sql.Date(utilDate.getTime());
 	}
+	public static java.util.Date sqlDate2UtilDate(java.sql.Date sqlDate){
+		return new java.util.Date(sqlDate.getTime());
+	}
 }

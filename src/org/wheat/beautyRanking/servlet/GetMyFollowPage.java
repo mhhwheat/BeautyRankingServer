@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.wheat.beautyRanking.dbHelper.MysqlDBHelper;
 import org.wheat.beautyRanking.loader.HttpDataLoaderServer;
+import org.wheat.beautyRanking.entity.ConstantValue;
 import org.wheat.beautyRanking.entity.json.BeautyIntroductionListJson;
 import org.wheat.beautyRanking.entity.json.PhotoListJson;
 /**
@@ -40,6 +41,7 @@ public class GetMyFollowPage extends HttpServlet {
 		if(beautyIntroductionListJson==null)
 		{
 			System.out.println("beautyIntroductionListJson is null");
+			response.setStatus(ConstantValue.getDataFailed);
 			return;
 		}
 		String json=HttpDataLoaderServer.toJson(beautyIntroductionListJson);

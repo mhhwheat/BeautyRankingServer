@@ -38,10 +38,8 @@ public class DeletePhoto extends HttpServlet {
 		MysqlDBHelper dbHelper=MysqlDBHelper.getInstance();
 		int code = -1;
 		code = dbHelper.deletePhoto(photoId);
-		if(code == -1){
-			response.sendError(ConstantValue.ServerDataNotGet);
-			return;
-		}
+		response.sendError(ConstantValue.ServerDataNotGet);
+		return;
 	}
 
 	/**

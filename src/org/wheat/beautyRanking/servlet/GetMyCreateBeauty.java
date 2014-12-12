@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.wheat.beautyRanking.dbHelper.MysqlDBHelper;
+import org.wheat.beautyRanking.entity.ConstantValue;
 import org.wheat.beautyRanking.entity.json.BeautyIntroductionListJson;
 import org.wheat.beautyRanking.loader.HttpDataLoaderServer;
 
@@ -38,7 +39,7 @@ public class GetMyCreateBeauty extends HttpServlet {
 		if(beautyIntroductionListJson==null)
 		{
 			System.out.println("beautyIntroductionListJson is null");
-			response.setStatus(500);
+			response.setStatus(ConstantValue.getDataFailed);
 			return;
 		}
 		String json=HttpDataLoaderServer.toJson(beautyIntroductionListJson);

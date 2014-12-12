@@ -12,6 +12,8 @@ public class Photo
 	//ÊôÓÚÄÄ¸öbeautyµÄbeautyId
 	@SerializedName("beautyId")
 	private int beautyId;
+	@SerializedName("photoId")
+	private int photoId;
 	//ÕÕÆ¬id
 	@SerializedName("commentCount")
 	private int commentCount=0;
@@ -82,5 +84,12 @@ public class Photo
 	{
 		return this.uploadTime;
 	}
-	
+	public void setPhotoId(int photoId)
+	{
+		this.photoId=photoId;
+	}
+	public int getPhotoId()
+	{
+		return this.photoId;
+	}
 }
