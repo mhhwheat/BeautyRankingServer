@@ -35,13 +35,7 @@ public class GetMyCreateBeauty extends HttpServlet {
 		String userPhoneNumber= request.getParameter("userPhoneNumber");
 		System.out.println(userPhoneNumber);
 		MysqlDBHelper dbHelper=MysqlDBHelper.getInstance();
-		BeautyIntroductionListJson beautyIntroductionListJson=dbHelper.getMyFollow(userPhoneNumber);
-		if(beautyIntroductionListJson==null)
-		{
-			System.out.println("beautyIntroductionListJson is null");
-			response.setStatus(ConstantValue.getDataFailed);
-			return;
-		}
+		BeautyIntroductionListJson beautyIntroductionListJson=dbHelper.getMyCreate(userPhoneNumber);
 		String json=HttpDataLoaderServer.toJson(beautyIntroductionListJson);
 		String result=new String(json.getBytes("UTF-8"),"8859_1");
 		PrintWriter out=response.getWriter();

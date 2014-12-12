@@ -564,6 +564,9 @@ public class MysqlDBHelper
 			}
 		}catch(Exception e){
 			e.printStackTrace();
+			photoListJson=new PhotoListJson();
+			photoListJson.setData(null);
+			photoListJson.setCode(ConstantValue.DBException);
 		}
 		finally
 		{
@@ -585,6 +588,9 @@ public class MysqlDBHelper
 			photoListJson=new PhotoListJson();
 			photoListJson.setData(photoList);
 		}
+		photoListJson=new PhotoListJson();
+		photoListJson.setData(null);
+		photoListJson.setCode(ConstantValue.DataNotFoundInDB);
 		return photoListJson;
 	}
 	
@@ -605,7 +611,7 @@ public class MysqlDBHelper
 		try
 		{
 			conn=database.getConnetion();
-			String querySql="select beauty_id,true_name,school ,description,avatar_path  from beauty where beayty_id in (select beauty_id  from user_follow where user_phone_number = ?)";
+			String querySql="select beauty_id,true_name,school ,description,avatar_path  from beauty where beauty_id in (select beauty_id  from user_follow where user_phone_number = ?)";
 			PreparedStatement ps=conn.prepareStatement(querySql);
 			ps.setString(1, userPhoneNumber);
 			ResultSet rs=ps.executeQuery();
@@ -620,6 +626,73 @@ public class MysqlDBHelper
 			}
 		}catch(Exception e){
 			e.printStackTrace();
+			beautyIntroductionListJson= new BeautyIntroductionListJson();
+			beautyIntroductionListJson.setCode(ConstantValue.DBException);
+			return beautyIntroductionListJson;
+		}
+		finally
+		{
+			if(conn!=null)
+			{
+				try 
+				{
+					conn.close();
+				} catch (SQLException e) 
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+		if(list.size()>0)
+		{
+			beautyList=new BeautyIntroductionList();
+			beautyList.setIntroductionList(list);
+			beautyIntroductionListJson=new BeautyIntroductionListJson();
+			beautyIntroductionListJson.setData(beautyList);
+			beautyIntroductionListJson.setCode(ConstantValue.operateSuccess);
+			return beautyIntroductionListJson;
+		}
+		else{
+			beautyIntroductionListJson= new BeautyIntroductionListJson();
+			beautyIntroductionListJson.setCode(ConstantValue.DataNotFoundInDB);
+			return beautyIntroductionListJson;
+		}
+	}
+	
+	/**
+	 * 查找我的创建页面
+	 * @param userPhoneNumber  要查找的用户id
+	 * @return
+	 */
+	public BeautyIntroductionListJson getMyCreate(String userPhoneNumber)
+	{
+		Connection conn=null;
+		ArrayList<BeautyIntroduction> list=new ArrayList<BeautyIntroduction>();
+		BeautyIntroductionList beautyList;
+		BeautyIntroductionListJson beautyIntroductionListJson=null;
+		try
+		{
+			conn=database.getConnetion();
+			String querySql="select beauty_id  , true_name ,school, description , avatar_path from beauty where user_phone_number = ?";
+			PreparedStatement ps=conn.prepareStatement(querySql);
+			ps.setString(1, userPhoneNumber);
+			ResultSet rs=ps.executeQuery();
+			while(rs.next())
+			{
+				BeautyIntroduction temp=new BeautyIntroduction();
+				temp.setBeautyId(rs.getInt("beauty_id"));
+				temp.setBeautyName(rs.getString("true_name"));
+				temp.setSchool(rs.getString("school"));
+				temp.setDescription(rs.getString("description"));
+				temp.setAvatarPath(rs.getString("avatar_path"));
+				list.add(temp);
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			beautyIntroductionListJson=new BeautyIntroductionListJson();
+			beautyIntroductionListJson.setData(null);
+			beautyIntroductionListJson.setCode(ConstantValue.DBException);
+			return beautyIntroductionListJson;
 		}
 		finally
 		{
@@ -641,61 +714,11 @@ public class MysqlDBHelper
 			beautyIntroductionListJson=new BeautyIntroductionListJson();
 			beautyIntroductionListJson.setData(beautyList);
 			return beautyIntroductionListJson;
-		}
-		return null;
-	}
-	
-	/**
-	 * 查找我的创建页面
-	 * @param userPhoneNumber  要查找的用户id
-	 * @return
-	 */
-	public BeautyIntroductionListJson getMyCreate(String userPhoneNumber)
-	{
-		Connection conn=null;
-		ArrayList<BeautyIntroduction> list=new ArrayList<BeautyIntroduction>();
-		BeautyIntroductionList beautyList;
-		BeautyIntroductionListJson beautyIntroductionListJson=null;
-		try
-		{
-			conn=database.getConnetion();
-			String querySql="select beauty_id , true_name ,school, description , avatar_path from beauty where user_phone_number = ?";
-			PreparedStatement ps=conn.prepareStatement(querySql);
-			ps.setString(1, userPhoneNumber);
-			ResultSet rs=ps.executeQuery();
-			while(rs.next())
-			{
-				BeautyIntroduction temp=new BeautyIntroduction();
-				temp.setBeautyName(rs.getString("true_name"));
-				temp.setSchool(rs.getString("school"));
-				temp.setDescription(rs.getString("description"));
-				temp.setAvatarPath(rs.getString("avatar_path"));
-				list.add(temp);
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		finally
-		{
-			if(conn!=null)
-			{
-				try 
-				{
-					conn.close();
-				} catch (SQLException e) 
-				{
-					e.printStackTrace();
-				}
-			}
-		}
-		if(list.size()>0)
-		{
-			beautyList=new BeautyIntroductionList();
-			beautyList.setIntroductionList(list);
+		}else{
 			beautyIntroductionListJson=new BeautyIntroductionListJson();
-			beautyIntroductionListJson.setData(beautyList);
+			beautyIntroductionListJson.setCode(ConstantValue.DataNotFoundInDB);
+			return beautyIntroductionListJson;
 		}
-		return beautyIntroductionListJson;
 	}
 	
 	
@@ -707,8 +730,7 @@ public class MysqlDBHelper
 	 * @param userPhoneNumber  要查找的用户id
 	 * @return
 	 */
-	public BeautyIntroductionListJson getNeighbour(String lat,String lng)
-	{
+	public BeautyIntroductionListJson getNeighbour(double lat,double lng){
 		
 		Connection conn=null;
 		ArrayList<BeautyIntroduction> list=new ArrayList<BeautyIntroduction>();
@@ -718,21 +740,24 @@ public class MysqlDBHelper
 		{
 			conn=database.getConnetion();
 			String querySql="select * from beauty where  "
-					+ "lat > '?'-1 and  "
-					+ "lat < '?'+1 and "
-					+ "lng > '?'-1 and  "
-					+ "lng < '?'+1"
-                    +"order by ACOS(SIN(('?' * 3.1415) / 180 ) *"
+					+ "lat > ?-1 and  "
+					+ "lat < ?+1 and "
+					+ "lng > ?-1 and  "
+					+ "lng < ?+1 "
+                    +"order by ACOS(SIN((? * 3.1415) / 180 ) *"
                     + "SIN((lat * 3.1415) / 180 ) +"
-                    + "COS(('?' * 3.1415) / 180 ) *"
+                    + "COS((? * 3.1415) / 180 ) *"
                     + "COS((lat * 3.1415) / 180 ) *"
-                    + "COS(('?'* 3.1415) / 180 - (lng * 3.1415) / 180 ) ) "
-                    + "* 6380 asc limit 10?";
+                    + "COS((? * 3.1415) / 180 - (lng * 3.1415) / 180 ) ) "
+                    + "* 6380 asc limit 10";
 			PreparedStatement ps=conn.prepareStatement(querySql);
-			ps.setString(1, lat);
-			ps.setString(2,lat);
-			ps.setString(3,lng);
-			ps.setString(4, lng);
+			ps.setDouble(1, lat);
+			ps.setDouble(2,lat);
+			ps.setDouble(3,lng);
+			ps.setDouble(4, lng);
+			ps.setDouble(5, lat);
+			ps.setDouble(6,lat);
+			ps.setDouble(7, lng);
 			ResultSet rs=ps.executeQuery();
 			while(rs.next())
 			{
@@ -745,6 +770,10 @@ public class MysqlDBHelper
 			}
 		}catch(Exception e){
 			e.printStackTrace();
+			BeautyIntroductionListJson errorListJson = new BeautyIntroductionListJson();
+			errorListJson.setCode(ConstantValue.DBException);
+			System.out.println("after print exception");
+			return errorListJson;
 		}
 		finally
 		{
@@ -765,8 +794,12 @@ public class MysqlDBHelper
 			beautyList.setIntroductionList(list);
 			beautyIntroductionListJson=new BeautyIntroductionListJson();
 			beautyIntroductionListJson.setData(beautyList);
+			beautyIntroductionListJson.setCode(ConstantValue.operateSuccess);
+			return beautyIntroductionListJson;
 		}
-		return beautyIntroductionListJson;
+		BeautyIntroductionListJson errorListJson = new BeautyIntroductionListJson();
+		errorListJson.setCode(ConstantValue.DataNotFoundInDB);
+		return errorListJson;
 	}
 	
 	
@@ -825,7 +858,7 @@ public class MysqlDBHelper
 		}
 		if(successCount>0){
 			System.out.println("success!");
-			return ConstantValue.InsertDbSuccess;
+			return ConstantValue.operateSuccess;
 		}else{
 			System.out.println("faild");
 			return ConstantValue.InsertDbFailed;
@@ -921,7 +954,7 @@ public class MysqlDBHelper
 		}
 		if(insertBeautyCount>0){
 			System.out.println("success!");
-			return ConstantValue.InsertDbSuccess;//插入成功
+			return ConstantValue.operateSuccess;//插入成功
 		}else{
 			System.out.println("faild");
 			return ConstantValue.InsertDbFailed;//插入失败
@@ -952,7 +985,7 @@ public class MysqlDBHelper
 		
 		if(updateCount>0){
 			System.out.println("success!");
-			return ConstantValue.updateCommentCountSuccess;//插入成功
+			return ConstantValue.operateSuccess;//插入成功
 		}else{
 			System.out.println("faild");
 			return ConstantValue.updateCommentCountFailed;//插入失败
@@ -1019,7 +1052,7 @@ public class MysqlDBHelper
 		 */
 		if(updateCommentCount>0){
 			System.out.println("success!");
-			return ConstantValue.InsertDbSuccess;//插入成功
+			return ConstantValue.operateSuccess;//插入成功
 		}else{
 			System.out.println("faild");
 			return ConstantValue.InsertDbFailed;//插入失败
@@ -1103,7 +1136,7 @@ public class MysqlDBHelper
 	* @param   beautyId
 	* @return
 	 */
-	public  BeautyDetail getBeautyDetail(int beautyId){
+	public  BeautyDetailJson getBeautyDetail(int beautyId){
 		
 		Connection conn=null;
 		PreparedStatement ps=null;
@@ -1137,6 +1170,9 @@ public class MysqlDBHelper
 			
 		}catch(Exception e){
 			e.printStackTrace();
+			BeautyDetailJson beautyJson =new BeautyDetailJson();
+			beautyJson.setCode(ConstantValue.DBException);
+			return beautyJson;
 		}
 		finally
 		{
@@ -1160,21 +1196,31 @@ public class MysqlDBHelper
 				}
 			}
 		}
-		return temp;
+		if(temp!=null){
+			BeautyDetailJson beautyJson =new BeautyDetailJson();
+			beautyJson.setData(temp);
+			beautyJson.setCode(ConstantValue.operateSuccess);
+			return beautyJson;
+		}else{
+			BeautyDetailJson beautyJson =new BeautyDetailJson();
+			beautyJson.setData(temp);
+			beautyJson.setCode(ConstantValue.DataNotFoundInDB);
+			beautyJson.setErrMsg("数据库查找不到数据！");
+			return beautyJson;
+		}
+		
 
 		
 	}
 	/**
-	 * @deprecated delete one beauty all message ,including it's photo
+	 * @description delete one beauty all message ,including it's photo
 	 * @param beautyId
 	 * @return the execute code
 	 */
 	public int deleteBeauty(String beautyId){
 		Connection conn = null;
 		PreparedStatement ps = null;
-		int resultCode=-1;
 		int delBeuCode=-1;
-		int delPhoCode=-1;
 		String deleteBeautySql = "delete from beauty where beauty_id = ?";
 		try{
 			conn = database.getConnetion();
@@ -1183,13 +1229,13 @@ public class MysqlDBHelper
 			delBeuCode = ps.executeUpdate();
 			 
 			List<String>photoIdList = selectBeautyPhotoId(beautyId);
-			if(photoIdList==null)return -1;
-			
+			if(photoIdList!=null)
 			for(String photoId : photoIdList){
 			    deletePhoto(photoId);
 			}			
 		}catch (SQLException e){
 			e.printStackTrace();
+			return ConstantValue.DBException;
 		}
 		finally
 		{
@@ -1215,12 +1261,12 @@ public class MysqlDBHelper
 		}
 		
 		if(delBeuCode !=-1 ){//只要删除了beauty就算成功删除了，后面的photo就暂时不管
-			resultCode = delBeuCode ;
-		}
-		return resultCode;
+			return ConstantValue.operateSuccess;
+		}else
+			return ConstantValue.deleteBeautyFailed;
 	}
 	/**
-	 * @deprecated when you delete beauty ,you have to delete it's photos
+	 * @description when you delete beauty ,you have to delete it's photos
 	 * this function select all the photo_id belong to beauty for delete
 	 * @param beautyId
 	 * @return photo_id belong to beauty for delete
@@ -1300,7 +1346,9 @@ public class MysqlDBHelper
 			ps.setString(1, photoId);
 			delPraCode = ps.executeUpdate();
 		}catch (SQLException e){
+			
 			e.printStackTrace();
+			return ConstantValue.DBException;
 		}
 		finally
 		{
@@ -1325,7 +1373,7 @@ public class MysqlDBHelper
 			}
 		}
 		if(delPhoCode !=-1 ){//自要删除photo就可以了
-			return ConstantValue.deletePhotoSuccess;
+			return ConstantValue.operateSuccess;
 		}
 		return ConstantValue.deletePhotoFailed;
 	}
@@ -1365,6 +1413,7 @@ public class MysqlDBHelper
 			resultCode = ps.executeUpdate();
 		}catch (Exception e){
 			e.printStackTrace();
+			return ConstantValue.DBException;
 		}finally
 		{
 			if(ps!=null){
@@ -1388,9 +1437,99 @@ public class MysqlDBHelper
 			}
 		}
 		if(resultCode >0){
-			return ConstantValue.updateSuccess;
+			return ConstantValue.operateSuccess;
 		}else{
-			return ConstantValue.updateFailed;
+			return ConstantValue.dataNotInDBCannotUpdate;
 		}
 	}
+	
+	
+	
+	public int deleteComment(int commentId){
+		Connection conn = null;
+		PreparedStatement ps = null;
+		int delComCode=-1;
+		String deletePhotoSql = "delete from comment_record where commentId = ?";
+		try{
+			conn = database.getConnetion();
+			ps = conn.prepareStatement(deletePhotoSql);
+			ps.setInt(1, commentId);
+			delComCode = ps.executeUpdate();
+		}catch (SQLException e){
+			
+			e.printStackTrace();
+			return ConstantValue.DBException;
+		}
+		finally
+		{
+			if(ps!=null){
+				try 
+				{
+					ps.close();
+				} catch (SQLException e) 
+				{
+					e.printStackTrace();
+				}
+			}
+			if(conn!=null)
+			{
+				try 
+				{
+					conn.close();
+				} catch (SQLException e) 
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+		if(delComCode !=-1 ){//自要删除photo就可以了
+			return ConstantValue.operateSuccess;
+		}
+		return ConstantValue.deleteCommentFailed;
+	}
+	
+	public int deleteFollow(int beautyId,String userPhoneNumber){
+		Connection conn = null;
+		PreparedStatement ps = null;
+		int delComCode=-1;
+		String deletePhotoSql = "delete from user_follow where beauty_id = ? and user_phone_number=?";
+		try{
+			conn = database.getConnetion();
+			ps = conn.prepareStatement(deletePhotoSql);
+			ps.setInt(1, beautyId);
+			ps.setString(2,userPhoneNumber);
+			delComCode = ps.executeUpdate();
+		}catch (SQLException e){
+			
+			e.printStackTrace();
+			return ConstantValue.DBException;
+		}
+		finally
+		{
+			if(ps!=null){
+				try 
+				{
+					ps.close();
+				} catch (SQLException e) 
+				{
+					e.printStackTrace();
+				}
+			}
+			if(conn!=null)
+			{
+				try 
+				{
+					conn.close();
+				} catch (SQLException e) 
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+		if(delComCode !=-1 ){//自要删除photo就可以了
+			return ConstantValue.operateSuccess;
+		}
+		return ConstantValue.deleteFollowFailed;
+	}
+	
 }

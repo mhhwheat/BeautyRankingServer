@@ -41,11 +41,7 @@ public class GetBeautyDetail extends HttpServlet {
 		// TODO Auto-generated method stub
 		int beautyId = Integer.parseInt(request.getParameter("beautyId"));
 		MysqlDBHelper helper = MysqlDBHelper.getInstance();
-		BeautyDetail beautyDetail = helper.getBeautyDetail(beautyId);
-		if(beautyDetail==null){
-			response.setStatus(ConstantValue.getDataFailed);
-			return;
-		}
+		BeautyDetailJson beautyDetail = helper.getBeautyDetail(beautyId);
 		
 		String json=HttpDataLoaderServer.toJson(beautyDetail);
 		String responseData= new String(json.getBytes("UTF-8"),"8859_1");

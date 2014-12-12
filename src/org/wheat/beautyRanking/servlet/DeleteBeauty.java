@@ -42,10 +42,10 @@ public class DeleteBeauty extends HttpServlet {
 		MysqlDBHelper dbHelper=MysqlDBHelper.getInstance();
 		int code = -1;
 		code = dbHelper.deleteBeauty(beautyId);
-		if(code == -1){
-			response.sendError(ConstantValue.ServerDataNotGet);
-			return;
-		}
+		System.out.println(code);
+		response.setStatus(code);
+		return;
+
 	}
 
 	/**

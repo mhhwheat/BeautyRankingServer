@@ -23,7 +23,7 @@ public class JsonBaseImpl <T> implements JsonBase<T>,Serializable
 	  	private T mData;
 
 	  	@SerializedName("err")
-	  	private ErrMsg mErrMsg;
+	  	private String mErrMsg;
 
 	  	@Override
 	  	public int getCode() {
@@ -45,27 +45,22 @@ public class JsonBaseImpl <T> implements JsonBase<T>,Serializable
 	        mData = data;
 	    }
 
-	    public ErrMsg getErrMsg() {
+	    public String  getErrMsg() {
 	        return mErrMsg;
 	    }
 
-	    public void setErrMsg(ErrMsg errMsg) {
+	    public void setErrMsg(String errMsg) {
 	        mErrMsg = errMsg;
 	    }
 
 	    @Override
 	    public String getMsg() {
-	        if (mErrMsg != null) {
-	            return mErrMsg.getMsg();
-	        }
-	        return "";
+	        return this.mErrMsg;
 	    }
 
 	    @Override
 	    public void setMsg(String msg) {
-	        if (mErrMsg != null) {
-	            mErrMsg.setMsg(msg);
-	        }
+	        this.mErrMsg=msg;
 	    }
 
 	    @Override

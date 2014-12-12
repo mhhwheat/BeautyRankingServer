@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.wheat.beautyRanking.coders.Coder_Md5;
 import org.wheat.beautyRanking.dbHelper.MysqlDBHelper;
+import org.wheat.beautyRanking.entity.ConstantValue;
 import org.wheat.beautyRanking.entity.UserLogin;
 import org.wheat.beautyRanking.entity.json.BeautyIntroductionListJson;
 import org.wheat.beautyRanking.entity.json.UserLoginJson;
@@ -38,16 +39,11 @@ public class GetNeighour extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		
-		String lat = request.getParameter("lat");
-		String lng = request.getParameter("lng");
+		double lat =Double.parseDouble(request.getParameter("lat"));
+		double lng = Double.parseDouble(request.getParameter("lng"));
 		MysqlDBHelper helper=MysqlDBHelper.getInstance();
 		System.out.println("lat---------->"+lat+"  "+lng);
 		BeautyIntroductionListJson beautyIntroductionListJson=helper.getNeighbour(lat,lng);
-		if(beautyIntroductionListJson==null)
-		{
-			System.out.println("beautyIntroductionListJson is null");
-			return;
-		}
 		String json=HttpDataLoaderServer.toJson(beautyIntroductionListJson);
 		String result=new String(json.getBytes("UTF-8"),"8859_1");
 		PrintWriter out=response.getWriter();
