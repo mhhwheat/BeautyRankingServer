@@ -38,6 +38,12 @@ public class GetOneBeautyAllPhotos extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		String firstIndex=request.getParameter("firstIndex");
+		String count=request.getParameter("count");
+		if(firstIndex==null||count==null){
+			response.setStatus(ConstantValue.ClientParameterErr);
+			return;
+		}
 		String beautyId=request.getParameter("beautyId");
 		System.out.println("in doget "+ beautyId);
 		if(beautyId==null)
@@ -46,7 +52,7 @@ public class GetOneBeautyAllPhotos extends HttpServlet {
 			return;
 		}
 		MysqlDBHelper dbHelper=MysqlDBHelper.getInstance();
-		PhotoListJson photoListJson=dbHelper.getPhotoList(Integer.parseInt(beautyId));
+		PhotoListJson photoListJson=dbHelper.getPhotoList(Integer.parseInt(firstIndex), Integer.parseInt(count),Integer.parseInt(beautyId));
 		String json=HttpDataLoaderServer.toJson(photoListJson);
 		String result=new String(json.getBytes("UTF-8"),"8859_1");
 		PrintWriter out=response.getWriter();

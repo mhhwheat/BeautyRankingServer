@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.wheat.beautyRanking.dbHelper.MysqlDBHelper;
+import org.wheat.beautyRanking.entity.ConstantValue;
 import org.wheat.beautyRanking.entity.json.BeautyIntroductionListJson;
 import org.wheat.beautyRanking.loader.HttpDataLoaderServer;
 
@@ -59,8 +60,11 @@ public class GetSumPage extends HttpServlet {
 		*/
 		String firstIndex=request.getParameter("firstIndex");
 		String count=request.getParameter("count");
-		if(firstIndex==null||count==null)
+		if(firstIndex==null||count==null){
+			response.setStatus(ConstantValue.ClientParameterErr);
 			return;
+		}
+			
 		MysqlDBHelper dbHelper=MysqlDBHelper.getInstance();
 		BeautyIntroductionListJson beautyIntroductionListJson=dbHelper.getSumPage(Integer.parseInt(firstIndex), Integer.parseInt(count));
 		if(beautyIntroductionListJson==null)

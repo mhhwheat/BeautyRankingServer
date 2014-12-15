@@ -38,12 +38,17 @@ public class GetNeighour extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		
+		String firstIndex=request.getParameter("firstIndex");
+		String count=request.getParameter("count");
+		if(firstIndex==null||count==null){
+			response.setStatus(ConstantValue.ClientParameterErr);
+			return;
+		}
 		double lat =Double.parseDouble(request.getParameter("lat"));
 		double lng = Double.parseDouble(request.getParameter("lng"));
 		MysqlDBHelper helper=MysqlDBHelper.getInstance();
 		System.out.println("lat---------->"+lat+"  "+lng);
-		BeautyIntroductionListJson beautyIntroductionListJson=helper.getNeighbour(lat,lng);
+		BeautyIntroductionListJson beautyIntroductionListJson=helper.getNeighbour(Integer.parseInt(firstIndex), Integer.parseInt(count),lat,lng);
 		String json=HttpDataLoaderServer.toJson(beautyIntroductionListJson);
 		String result=new String(json.getBytes("UTF-8"),"8859_1");
 		PrintWriter out=response.getWriter();

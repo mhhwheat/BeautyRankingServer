@@ -35,9 +35,15 @@ public class GetMyFollowPage extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		//dencrypt the userphonenumber first
+		String firstIndex=request.getParameter("firstIndex");
+		String count=request.getParameter("count");
+		if(firstIndex==null||count==null){
+			response.setStatus(ConstantValue.ClientParameterErr);
+			return;
+		}
 		String userPhoneNumber= request.getParameter("userPhoneNumber");
 		MysqlDBHelper dbHelper=MysqlDBHelper.getInstance();
-		BeautyIntroductionListJson beautyIntroductionListJson=dbHelper.getMyFollow(userPhoneNumber);
+		BeautyIntroductionListJson beautyIntroductionListJson=dbHelper.getMyFollow(Integer.parseInt(firstIndex), Integer.parseInt(count),userPhoneNumber);
 
 		String json=HttpDataLoaderServer.toJson(beautyIntroductionListJson);
 		String result=new String(json.getBytes("UTF-8"),"8859_1");

@@ -407,7 +407,7 @@ public class MysqlDBHelper
 	 * @param beaytyId beautyId
 	 * @return PhotoListJson 某个beautyId下的所有照片信息，图片返回路径信息
 	 */
-	public PhotoListJson getPhotoList(int beaytyId)
+	public PhotoListJson getPhotoList(int firstIndex,int count,int beaytyId)
 	{
 		Connection conn=null;
 		PreparedStatement ps=null;
@@ -418,10 +418,14 @@ public class MysqlDBHelper
 		try
 		{
 			conn = ConnectionPool.getInstance().getConnection();
-			String querySql="select beauty_id , photo_id , user_phone_number ,praise_count, comment_count , photo_path ,upload_time from photo where beauty_id=?";
+			String querySql="select beauty_id , photo_id , user_phone_number ,praise_count,"
+					+ " comment_count , photo_path ,upload_time from photo where beauty_id=?"
+					+ " order by photo_id asc limit ?,?";
 			
 			ps=conn.prepareStatement(querySql);
 			ps.setInt(1, beaytyId);
+			ps.setInt(2, firstIndex);
+			ps.setInt(3, count);
 			rs=ps.executeQuery();
 			while(rs.next())
 			{
@@ -464,7 +468,7 @@ public class MysqlDBHelper
 	 * @param userPhoneNumber  要查找的用户id
 	 * @return
 	 */
-	public BeautyIntroductionListJson getMyFollow(String userPhoneNumber)
+	public BeautyIntroductionListJson getMyFollow(int firstIndex,int count,String userPhoneNumber)
 	{
 		
 		Connection conn=null;
@@ -477,9 +481,13 @@ public class MysqlDBHelper
 		try
 		{
 			conn = ConnectionPool.getInstance().getConnection();
-			String querySql="select beauty_id,true_name,school ,description,avatar_path  from beauty where beauty_id in (select beauty_id  from user_follow where user_phone_number = ?)";
+			String querySql="select beauty_id,true_name,school ,description,avatar_path "
+					+ " from beauty where beauty_id in (select beauty_id  "
+					+ "from user_follow where user_phone_number = ?) order by beauty_id asc limit ?,?";
 			ps=conn.prepareStatement(querySql);
 			ps.setString(1, userPhoneNumber);
+			ps.setInt(2, firstIndex);
+			ps.setInt(3, count);
 			rs=ps.executeQuery();
 			while(rs.next())
 			{
@@ -521,7 +529,7 @@ public class MysqlDBHelper
 	 * @param userPhoneNumber  要查找的用户id
 	 * @return
 	 */
-	public BeautyIntroductionListJson getMyCreate(String userPhoneNumber)
+	public BeautyIntroductionListJson getMyCreate(int firstIndex,int count,String userPhoneNumber)
 	{
 		Connection conn=null;
 		PreparedStatement ps=null;
@@ -532,9 +540,12 @@ public class MysqlDBHelper
 		try
 		{
 			conn = ConnectionPool.getInstance().getConnection();
-			String querySql="select beauty_id  , true_name ,school, description , avatar_path from beauty where user_phone_number = ?";
+			String querySql="select beauty_id  , true_name ,school, description , avatar_path from beauty where user_phone_number = ?"
+					+ " order by beauty_id asc limit ?,?";
 			ps=conn.prepareStatement(querySql);
 			ps.setString(1, userPhoneNumber);
+			ps.setInt(2, firstIndex);
+			ps.setInt(3, count);
 			rs=ps.executeQuery();
 			while(rs.next())
 			{
@@ -580,7 +591,7 @@ public class MysqlDBHelper
 	 * @param userPhoneNumber  要查找的用户id
 	 * @return
 	 */
-	public BeautyIntroductionListJson getNeighbour(double lat,double lng){
+	public BeautyIntroductionListJson getNeighbour(int firstIndex,int count,double lat,double lng){
 		
 		Connection conn=null;
 		PreparedStatement ps=null;
@@ -601,7 +612,7 @@ public class MysqlDBHelper
                     + "COS((? * 3.1415) / 180 ) *"
                     + "COS((lat * 3.1415) / 180 ) *"
                     + "COS((? * 3.1415) / 180 - (lng * 3.1415) / 180 ) ) "
-                    + "* 6380 asc limit 10";
+                    + "* 6380 asc limit ?,?";
 			ps=conn.prepareStatement(querySql);
 			ps.setDouble(1, lat);
 			ps.setDouble(2,lat);
@@ -610,6 +621,8 @@ public class MysqlDBHelper
 			ps.setDouble(5, lat);
 			ps.setDouble(6,lat);
 			ps.setDouble(7, lng);
+			ps.setInt(8, firstIndex);
+			ps.setInt(9, count);
 			rs=ps.executeQuery();
 			while(rs.next())
 			{

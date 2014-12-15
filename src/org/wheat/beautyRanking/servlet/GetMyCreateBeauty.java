@@ -32,10 +32,16 @@ public class GetMyCreateBeauty extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		String firstIndex=request.getParameter("firstIndex");
+		String count=request.getParameter("count");
+		if(firstIndex==null||count==null){
+			response.setStatus(ConstantValue.ClientParameterErr);
+			return;
+		}
 		String userPhoneNumber= request.getParameter("userPhoneNumber");
 		System.out.println(userPhoneNumber);
 		MysqlDBHelper dbHelper=MysqlDBHelper.getInstance();
-		BeautyIntroductionListJson beautyIntroductionListJson=dbHelper.getMyCreate(userPhoneNumber);
+		BeautyIntroductionListJson beautyIntroductionListJson=dbHelper.getMyCreate(Integer.parseInt(firstIndex), Integer.parseInt(count),userPhoneNumber);
 		String json=HttpDataLoaderServer.toJson(beautyIntroductionListJson);
 		String result=new String(json.getBytes("UTF-8"),"8859_1");
 		PrintWriter out=response.getWriter();
