@@ -33,21 +33,45 @@ import org.wheat.beautyRanking.loader.HttpDataLoaderServer;
 public class MysqlDBHelper
 {
 	private static MysqlDBHelper dbHelper=new MysqlDBHelper();
-	private MysqlDatabase database=new MysqlDatabase();
+//	private MysqlDatabase database=new MysqlDatabase();
 	private MysqlDBHelper(){};
 	public static MysqlDBHelper getInstance()
 	{
 		return dbHelper;
 	}
+
+	public static void CloseConnAndStatement(Connection conn,
+			PreparedStatement ps,ResultSet rs) {
+		if (rs != null) {
+			try {
+				rs.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		if (ps != null) {
+			try {
+				ps.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		if(conn!=null){
+			ConnectionPool.getInstance().returnConnection(conn);
+		}
+		
+	}
 	public UserLogin selectUser(String userPhoneNumber)
 	{
 		Connection conn=null;
+		PreparedStatement ps=null;
+		ResultSet rs=null;
 		UserLogin user=new UserLogin();
 		try{
-			conn=database.getConnetion();
+			conn = ConnectionPool.getInstance().getConnection();
 			String querySql="select * from user_table where user_phone_number="+userPhoneNumber;
-			PreparedStatement ps=conn.prepareStatement(querySql);
-			ResultSet rs=ps.executeQuery(querySql);
+			ps=conn.prepareStatement(querySql);
+			rs=ps.executeQuery(querySql);
 			if(rs.next())
 			{
 				user.setUserPhoneNumber(rs.getString("user_phone_number"));
@@ -59,34 +83,22 @@ public class MysqlDBHelper
 			}
 			else
 				return null;
-			ps.close();
-			rs.close();
 		}catch(Exception e){
 			e.printStackTrace();
-		}
-		finally
-		{
-			if(conn!=null)
-			{
-				try 
-				{
-					conn.close();
-				} catch (SQLException e) 
-				{
-					e.printStackTrace();
-				}
-			}
+		}finally{
+			CloseConnAndStatement(conn,ps,rs);
 		}
 		return user;
 	}
 	public boolean insertUser(HashMap<String, String> user)
 	{
 		Connection conn=null;
+		PreparedStatement ps=null;
 		try
 		{
-			conn=database.getConnetion();
+			conn = ConnectionPool.getInstance().getConnection();
 			String insql="insert into user_table(user_phone_number,password,nikename,school,admission_year,sex) values(?,?,?,?,?,?)";
-			java.sql.PreparedStatement ps=conn.prepareStatement(insql);
+			ps=conn.prepareStatement(insql);
 			ps.setString(1, user.get("userPhoneNumber"));
 			ps.setString(2, user.get("password"));
 			ps.setString(3, user.get("nikeName"));
@@ -100,30 +112,20 @@ public class MysqlDBHelper
 		catch(Exception e)
 		{
 			e.printStackTrace();
-		}
-		finally
-		{
-			if(conn!=null)
-			{
-				try 
-				{
-					conn.close();
-				} catch (SQLException e) 
-				{
-					e.printStackTrace();
-				}
-			}
+		}finally{
+			CloseConnAndStatement(conn,ps,null);
 		}
 		return false;
 	}
 	public boolean insertUserTable(RequestRegisterUser user)
 	{
 		Connection conn=null;
+		java.sql.PreparedStatement ps=null;
 		try
 		{
-			conn=database.getConnetion();
+			conn = ConnectionPool.getInstance().getConnection();
 			String insql="insert into user_table(user_phone_number,password,nikename,school,admission_year,sex,avatar_path) values(?,?,?,?,?,?,?)";
-			java.sql.PreparedStatement ps=conn.prepareStatement(insql);
+			ps=conn.prepareStatement(insql);
 			ps.setString(1, user.getUserPhoneNumber());
 			ps.setString(2, user.getPassword());
 			ps.setString(3, user.getNickName());
@@ -138,71 +140,18 @@ public class MysqlDBHelper
 		catch(Exception e)
 		{
 			e.printStackTrace();
-		}
-		finally
-		{
-			if(conn!=null)
-			{
-				try 
-				{
-					conn.close();
-				} catch (SQLException e) 
-				{
-					e.printStackTrace();
-				}
-			}
+		}finally{
+			CloseConnAndStatement(conn,ps,null);
 		}
 		return false;
 	}
 	/*
-	public boolean insertBeauty(Beauty beauty)
-	{
-		Connection conn=null;
-		try
-		{
-			conn=database.getConnetion();
-			String insql="insert into beauty(beauty_id,avatar_path,true_name,user_phone_number,prase_times,school,admission_year,birthday,constellation,description) values(?,?,?,?,?,?,?,?,?,?)";
-			java.sql.PreparedStatement ps=conn.prepareStatement(insql);
-			ps.setInt(1, beauty.getBeautyID());
-			ps.setString(2, beauty.getAvatarPath());
-			ps.setString(3, beauty.getTrueName());
-			ps.setString(4, beauty.getUserPhoneNumber());
-			ps.setLong(5, beauty.getPraseTimes());
-			ps.setString(6, beauty.getSchool());
-			ps.setString(7, beauty.getAdmissionYear());
-			ps.setString(8, beauty.getBirthday());
-			ps.setString(9, beauty.getConstellation());
-			ps.setString(10, beauty.getDescription());
-			int resutl=ps.executeUpdate();
-			if(resutl>0)
-				return true;
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-		finally
-		{
-			if(conn!=null)
-			{
-				try 
-				{
-					conn.close();
-				} catch (SQLException e) 
-				{
-					e.printStackTrace();
-				}
-			}
-		}
-		return false;
-	}
-	*/
 	public boolean insertPhoto(Photo_huahua photo)
 	{
 		Connection conn=null;
 		try
 		{
-			conn=database.getConnetion();
+			conn = ConnectionPool.getInstance().getConnection();
 			String insql="insert into photo(photo_id,beauty_id,photo_path,user_phone_number,upload_time) values(?,?,?,?,?)";
 			java.sql.PreparedStatement ps=conn.prepareStatement(insql);
 			ps.setInt(1, photo.getPhotoID());
@@ -218,19 +167,6 @@ public class MysqlDBHelper
 		{
 			e.printStackTrace();
 		}
-		finally
-		{
-			if(conn!=null)
-			{
-				try 
-				{
-					conn.close();
-				} catch (SQLException e) 
-				{
-					e.printStackTrace();
-				}
-			}
-		}
 		return false;
 	}
 	public boolean insertCommentRecord(Comment comment)
@@ -238,7 +174,7 @@ public class MysqlDBHelper
 		Connection conn=null;
 		try
 		{
-			conn=database.getConnetion();
+			conn = ConnectionPool.getInstance().getConnection();
 			String insql="insert into comment_record(photo_id,beauty_id,user_phone_number,comment_time,comment_content) values(?,?,?,?,?)";
 			java.sql.PreparedStatement ps=conn.prepareStatement(insql);
 			ps.setInt(1, comment.getPhotoID());
@@ -254,19 +190,6 @@ public class MysqlDBHelper
 		{
 			e.printStackTrace();
 		}
-		finally
-		{
-			if(conn!=null)
-			{
-				try 
-				{
-					conn.close();
-				} catch (SQLException e) 
-				{
-					e.printStackTrace();
-				}
-			}
-		}
 		return false;
 	}
 	public boolean insertPraiseRecord(PraiseRecord praiseRecord)
@@ -274,7 +197,7 @@ public class MysqlDBHelper
 		Connection conn=null;
 		try
 		{
-			conn=database.getConnetion();
+			conn = ConnectionPool.getInstance().getConnection();
 			String insql="insert into praise_record(user_phone_number,beauty_id,praise_time) values(?,?,?)";
 			java.sql.PreparedStatement ps=conn.prepareStatement(insql);
 			ps.setString(1, praiseRecord.getUserPhoneNumber());
@@ -288,31 +211,20 @@ public class MysqlDBHelper
 		{
 			e.printStackTrace();
 		}
-		finally
-		{
-			if(conn!=null)
-			{
-				try 
-				{
-					conn.close();
-				} catch (SQLException e) 
-				{
-					e.printStackTrace();
-				}
-			}
-		}
 		return false;
-	}
+	}*/
 	//返回值0代表用户名不存在，1表示密码不正确，2表示用户名和密码都正确
 	public int isUserExist(String userPhoneNumber,String userPassword)
 	{
 		Connection conn=null;
+		java.sql.PreparedStatement ps=null;
+		ResultSet rs=null;
 		int returnCode=0;
 		try{
-			conn=database.getConnetion();
+			conn = ConnectionPool.getInstance().getConnection();
 			String sql="selct * from user_table where user_phone_number='"+userPhoneNumber+"'";
-			java.sql.Statement statement=conn.createStatement();
-			ResultSet rs=statement.executeQuery(sql);
+			ps=conn.prepareStatement(sql);
+			rs=ps.executeQuery(sql);
 			if(rs.next())
 			{
 				if(userPassword.equals(rs.getString("password")))
@@ -325,19 +237,8 @@ public class MysqlDBHelper
 		}catch(Exception e)
 		{
 			e.printStackTrace();
-		}
-		finally
-		{
-			if(conn!=null)
-			{
-				try 
-				{
-					conn.close();
-				} catch (SQLException e) 
-				{
-					e.printStackTrace();
-				}
-			}
+		}finally{
+			CloseConnAndStatement(conn,ps,rs);
 		}
 		return returnCode;
 	}
@@ -351,17 +252,19 @@ public class MysqlDBHelper
 	public BeautyIntroductionListJson getNewPage(int firstIndex,int count)
 	{
 		Connection conn=null;
+		PreparedStatement ps=null;
+		ResultSet rs=null;
 		ArrayList<BeautyIntroduction> list=new ArrayList<BeautyIntroduction>();
 		BeautyIntroductionList beautyList;
 		BeautyIntroductionListJson beautyIntroductionListJson=null;
 		try
 		{
-			conn=database.getConnetion();
+			conn = ConnectionPool.getInstance().getConnection();
 			String querySql="select beauty_id , true_name, school , description ,avatar_path from beauty order by create_time desc limit ?,?";
-			PreparedStatement ps=conn.prepareStatement(querySql);
+			ps=conn.prepareStatement(querySql);
 			ps.setInt(1, firstIndex);
 			ps.setInt(2, count);
-			ResultSet rs=ps.executeQuery();
+			rs=ps.executeQuery();
 			while(rs.next())
 			{
 				BeautyIntroduction temp=new BeautyIntroduction();
@@ -373,19 +276,8 @@ public class MysqlDBHelper
 			}
 		}catch(Exception e){
 			e.printStackTrace();
-		}
-		finally
-		{
-			if(conn!=null)
-			{
-				try 
-				{
-					conn.close();
-				} catch (SQLException e) 
-				{
-					e.printStackTrace();
-				}
-			}
+		}finally{
+			CloseConnAndStatement(conn,ps, rs);
 		}
 		if(list.size()>0)
 		{
@@ -407,18 +299,23 @@ public class MysqlDBHelper
 	public BeautyIntroductionListJson getRisePage(int firstIndex,int count,int before)
 	{
 		Connection conn=null;
+		PreparedStatement ps=null;
+		ResultSet rs=null;
 		ArrayList<BeautyIntroduction> list=new ArrayList<BeautyIntroduction>();
 		BeautyIntroductionList beautyList;
 		BeautyIntroductionListJson beautyIntroductionListJson=null;
 		try
 		{
-			conn=database.getConnetion();
-			String querySql="select beauty_id , true_name , school , description , avatar_path from beauty where beauty_id in ( select beauty_id from (select beauty_id ,count(*) as count_for_weeks from praise_record where praise_time > ? group by beauty_id order by count_for_weeks desc limit ?,?) as temp)";
-			PreparedStatement ps=conn.prepareStatement(querySql);
+			conn = ConnectionPool.getInstance().getConnection();
+			String querySql="select beauty_id , true_name , school , description , avatar_path "
+					+ "from beauty where beauty_id in ( select beauty_id from "
+					+ " (select beauty_id ,count(*) as count_for_weeks from praise_record where praise_time > ? "
+					+ "group by beauty_id order by count_for_weeks desc limit ?,?) as temp)";
+			ps=conn.prepareStatement(querySql);
 			ps.setString(1, getDateBefore(before));
 			ps.setInt(2, firstIndex);
 			ps.setInt(3, count);
-			ResultSet rs=ps.executeQuery();
+			rs=ps.executeQuery();
 			while(rs.next())
 			{
 				BeautyIntroduction temp=new BeautyIntroduction();
@@ -434,16 +331,7 @@ public class MysqlDBHelper
 		}
 		finally
 		{
-			if(conn!=null)
-			{
-				try 
-				{
-					conn.close();
-				} catch (SQLException e) 
-				{
-					e.printStackTrace();
-				}
-			}
+			CloseConnAndStatement(conn,ps, rs);
 		}
 		if(list.size()>0)
 		{
@@ -472,17 +360,18 @@ public class MysqlDBHelper
 	{
 		Connection conn=null;
 		PreparedStatement ps=null;
+		ResultSet rs=null;
 		ArrayList<BeautyIntroduction> list=new ArrayList<BeautyIntroduction>();
 		BeautyIntroductionList beautyList;
 		BeautyIntroductionListJson beautyIntroductionListJson=null;
 		try
 		{
-			conn=database.getConnetion();
+			conn = ConnectionPool.getInstance().getConnection();
 			String querySql="select beauty_id , true_name ,school, description , avatar_path from beauty order by praise_times desc limit ?,?";
 			ps=conn.prepareStatement(querySql);
 			ps.setInt(1, firstIndex);
 			ps.setInt(2, count);
-			ResultSet rs=ps.executeQuery();
+			rs=ps.executeQuery();
 			while(rs.next())
 			{
 				BeautyIntroduction temp=new BeautyIntroduction();
@@ -497,25 +386,7 @@ public class MysqlDBHelper
 		}
 		finally
 		{
-			if(ps!=null){
-				try 
-				{
-					ps.close();
-				} catch (SQLException e) 
-				{
-					e.printStackTrace();
-				}
-			}
-			if(conn!=null)
-			{
-				try 
-				{
-					conn.close();
-				} catch (SQLException e) 
-				{
-					e.printStackTrace();
-				}
-			}
+			CloseConnAndStatement(conn,ps,rs);
 		}
 		if(list.size()>0)
 		{
@@ -539,17 +410,19 @@ public class MysqlDBHelper
 	public PhotoListJson getPhotoList(int beaytyId)
 	{
 		Connection conn=null;
+		PreparedStatement ps=null;
+		ResultSet rs=null;
 		ArrayList<Photo> list=new ArrayList<Photo>();
 		PhotoList photoList;
 		PhotoListJson photoListJson=null;
 		try
 		{
-			conn=database.getConnetion();
+			conn = ConnectionPool.getInstance().getConnection();
 			String querySql="select beauty_id , photo_id , user_phone_number ,praise_count, comment_count , photo_path ,upload_time from photo where beauty_id=?";
 			
-			PreparedStatement ps=conn.prepareStatement(querySql);
+			ps=conn.prepareStatement(querySql);
 			ps.setInt(1, beaytyId);
-			ResultSet rs=ps.executeQuery();
+			rs=ps.executeQuery();
 			while(rs.next())
 			{
 				Photo temp=new Photo();
@@ -570,16 +443,7 @@ public class MysqlDBHelper
 		}
 		finally
 		{
-			if(conn!=null)
-			{
-				try 
-				{
-					conn.close();
-				} catch (SQLException e) 
-				{
-					e.printStackTrace();
-				}
-			}
+			CloseConnAndStatement(conn,ps,rs);
 		}
 		if(list.size()>0)
 		{
@@ -604,17 +468,19 @@ public class MysqlDBHelper
 	{
 		
 		Connection conn=null;
+		PreparedStatement ps=null;
+		ResultSet rs=null;
 		ArrayList<BeautyIntroduction> list=new ArrayList<BeautyIntroduction>();
 		BeautyIntroductionList beautyList;
 		BeautyIntroductionListJson beautyIntroductionListJson=null;
 		
 		try
 		{
-			conn=database.getConnetion();
+			conn = ConnectionPool.getInstance().getConnection();
 			String querySql="select beauty_id,true_name,school ,description,avatar_path  from beauty where beauty_id in (select beauty_id  from user_follow where user_phone_number = ?)";
-			PreparedStatement ps=conn.prepareStatement(querySql);
+			ps=conn.prepareStatement(querySql);
 			ps.setString(1, userPhoneNumber);
-			ResultSet rs=ps.executeQuery();
+			rs=ps.executeQuery();
 			while(rs.next())
 			{
 				BeautyIntroduction temp=new BeautyIntroduction();
@@ -632,16 +498,7 @@ public class MysqlDBHelper
 		}
 		finally
 		{
-			if(conn!=null)
-			{
-				try 
-				{
-					conn.close();
-				} catch (SQLException e) 
-				{
-					e.printStackTrace();
-				}
-			}
+			CloseConnAndStatement(conn,ps,rs);
 		}
 		if(list.size()>0)
 		{
@@ -667,16 +524,18 @@ public class MysqlDBHelper
 	public BeautyIntroductionListJson getMyCreate(String userPhoneNumber)
 	{
 		Connection conn=null;
+		PreparedStatement ps=null;
+		ResultSet rs=null;
 		ArrayList<BeautyIntroduction> list=new ArrayList<BeautyIntroduction>();
 		BeautyIntroductionList beautyList;
 		BeautyIntroductionListJson beautyIntroductionListJson=null;
 		try
 		{
-			conn=database.getConnetion();
+			conn = ConnectionPool.getInstance().getConnection();
 			String querySql="select beauty_id  , true_name ,school, description , avatar_path from beauty where user_phone_number = ?";
-			PreparedStatement ps=conn.prepareStatement(querySql);
+			ps=conn.prepareStatement(querySql);
 			ps.setString(1, userPhoneNumber);
-			ResultSet rs=ps.executeQuery();
+			rs=ps.executeQuery();
 			while(rs.next())
 			{
 				BeautyIntroduction temp=new BeautyIntroduction();
@@ -696,16 +555,7 @@ public class MysqlDBHelper
 		}
 		finally
 		{
-			if(conn!=null)
-			{
-				try 
-				{
-					conn.close();
-				} catch (SQLException e) 
-				{
-					e.printStackTrace();
-				}
-			}
+			CloseConnAndStatement(conn,ps,rs);
 		}
 		if(list.size()>0)
 		{
@@ -733,12 +583,14 @@ public class MysqlDBHelper
 	public BeautyIntroductionListJson getNeighbour(double lat,double lng){
 		
 		Connection conn=null;
+		PreparedStatement ps=null;
+		ResultSet rs=null;
 		ArrayList<BeautyIntroduction> list=new ArrayList<BeautyIntroduction>();
 		BeautyIntroductionList beautyList;
 		BeautyIntroductionListJson beautyIntroductionListJson=null;
 		try
 		{
-			conn=database.getConnetion();
+			conn = ConnectionPool.getInstance().getConnection();
 			String querySql="select * from beauty where  "
 					+ "lat > ?-1 and  "
 					+ "lat < ?+1 and "
@@ -750,7 +602,7 @@ public class MysqlDBHelper
                     + "COS((lat * 3.1415) / 180 ) *"
                     + "COS((? * 3.1415) / 180 - (lng * 3.1415) / 180 ) ) "
                     + "* 6380 asc limit 10";
-			PreparedStatement ps=conn.prepareStatement(querySql);
+			ps=conn.prepareStatement(querySql);
 			ps.setDouble(1, lat);
 			ps.setDouble(2,lat);
 			ps.setDouble(3,lng);
@@ -758,7 +610,7 @@ public class MysqlDBHelper
 			ps.setDouble(5, lat);
 			ps.setDouble(6,lat);
 			ps.setDouble(7, lng);
-			ResultSet rs=ps.executeQuery();
+			rs=ps.executeQuery();
 			while(rs.next())
 			{
 				BeautyIntroduction temp=new BeautyIntroduction();
@@ -777,16 +629,7 @@ public class MysqlDBHelper
 		}
 		finally
 		{
-			if(conn!=null)
-			{
-				try 
-				{
-					conn.close();
-				} catch (SQLException e) 
-				{
-					e.printStackTrace();
-				}
-			}
+			CloseConnAndStatement(conn,ps,rs);
 		}
 		if(list.size()>0)
 		{
@@ -817,7 +660,7 @@ public class MysqlDBHelper
 		int  successCount=-1;
 		try
 		{
-			conn=database.getConnetion();
+			conn = ConnectionPool.getInstance().getConnection();
 			String querySql="insert into photo (beauty_id ,photo_path,user_phone_number,"
 					+ "upload_time,comment_count,praise_count) "
 					+ "values (?,?,?,?,?,?)";
@@ -836,25 +679,7 @@ public class MysqlDBHelper
 		}
 		finally
 		{
-			if(ps!=null){
-				try 
-				{
-					ps.close();
-				} catch (SQLException e) 
-				{
-					e.printStackTrace();
-				}
-			}
-			if(conn!=null)
-			{
-				try 
-				{
-					conn.close();
-				} catch (SQLException e) 
-				{
-					e.printStackTrace();
-				}
-			}
+			CloseConnAndStatement(conn,ps,null);
 		}
 		if(successCount>0){
 			System.out.println("success!");
@@ -905,7 +730,7 @@ public class MysqlDBHelper
 		int  insertBeautyCount=-1;
 		try
 		{
-			conn=database.getConnetion();
+			conn = ConnectionPool.getInstance().getConnection();
 			String querySql="insert into beauty (avatar_path ,true_name,user_phone_number,"
 					+ "praise_times,school,admission_year,birthday,constellation,description,"
 					+ "create_time,lat,lng) "
@@ -932,22 +757,13 @@ public class MysqlDBHelper
 		}
 		finally
 		{
-			if(ps!=null){
-				try 
-				{
-					ps.close();
-				} catch (SQLException e) 
-				{
-					e.printStackTrace();
-				}
-			}
-			if(conn!=null)
-			{
-				try 
-				{
-					conn.close();
-				} catch (SQLException e) 
-				{
+			CloseConnAndStatement(conn,ps,null);
+			if(conn!=null){
+				try {
+//					conn.close();
+					ConnectionPool.getInstance().returnConnection(conn);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -1005,7 +821,7 @@ public class MysqlDBHelper
 		int updateCommentCount=-1;
 		try
 		{
-			conn=database.getConnetion();
+			conn = ConnectionPool.getInstance().getConnection();
 			String querySql="insert into comment_record (photo_id ,user_phone_number,"
 					+ "comment_time,comment_content) "
 					+ "values (?,?,?,?)";
@@ -1027,25 +843,7 @@ public class MysqlDBHelper
 		}
 		finally
 		{
-			if(ps!=null){
-				try 
-				{
-					ps.close();
-				} catch (SQLException e) 
-				{
-					e.printStackTrace();
-				}
-			}
-			if(conn!=null)
-			{
-				try 
-				{
-					conn.close();
-				} catch (SQLException e) 
-				{
-					e.printStackTrace();
-				}
-			}
+			CloseConnAndStatement(conn,ps,null);
 		}
 		/**
 		 * 这里如果插入失败，上面的插入因该重做redo，暂时不考虑
@@ -1074,7 +872,7 @@ public class MysqlDBHelper
 		int updatePraiseCount=-1;
 		try
 		{
-			conn=database.getConnetion();
+			conn = ConnectionPool.getInstance().getConnection();
 			String querySql="insert into praise_record (user_phone_number ,praise_time,"
 					+ "photo_id) "
 					+ "values (?,?,?)";
@@ -1097,25 +895,7 @@ public class MysqlDBHelper
 		}
 		finally
 		{
-			if(ps!=null){
-				try 
-				{
-					ps.close();
-				} catch (SQLException e) 
-				{
-					e.printStackTrace();
-				}
-			}
-			if(conn!=null)
-			{
-				try 
-				{
-					conn.close();
-				} catch (SQLException e) 
-				{
-					e.printStackTrace();
-				}
-			}
+			CloseConnAndStatement(conn,ps,null);
 		}
 		if(insertCommentCount>0&&updatePraiseCount>0){
 			System.out.println("success!");
@@ -1143,7 +923,7 @@ public class MysqlDBHelper
 		BeautyDetail temp =null;
 		try
 		{
-			conn=database.getConnetion();
+			conn = ConnectionPool.getInstance().getConnection();
 			
 			String querySql="select beauty_id , avatar_path ,user_phone_number, praise_times ,"
 					+ " school ,admission_year,birthday, constellation,description,create_time  "
@@ -1176,25 +956,7 @@ public class MysqlDBHelper
 		}
 		finally
 		{
-			if(ps!=null){
-				try 
-				{
-					ps.close();
-				} catch (SQLException e) 
-				{
-					e.printStackTrace();
-				}
-			}
-			if(conn!=null)
-			{
-				try 
-				{
-					conn.close();
-				} catch (SQLException e) 
-				{
-					e.printStackTrace();
-				}
-			}
+			CloseConnAndStatement(conn,ps,null);
 		}
 		if(temp!=null){
 			BeautyDetailJson beautyJson =new BeautyDetailJson();
@@ -1221,17 +983,20 @@ public class MysqlDBHelper
 		Connection conn = null;
 		PreparedStatement ps = null;
 		int delBeuCode=-1;
+		int delPhoto=1;
 		String deleteBeautySql = "delete from beauty where beauty_id = ?";
 		try{
-			conn = database.getConnetion();
+			conn = ConnectionPool.getInstance().getConnection();
 			ps = conn.prepareStatement(deleteBeautySql);
 			ps.setString(1, beautyId);
 			delBeuCode = ps.executeUpdate();
-			 
+			System.out.println("delBeuCode  "+delBeuCode);
 			List<String>photoIdList = selectBeautyPhotoId(beautyId);
-			if(photoIdList!=null)
+			int tempCode=-1;
+			if(photoIdList!=null)//暂时只要delete  beauty成功就算成功
 			for(String photoId : photoIdList){
-			    deletePhoto(photoId);
+				tempCode=deletePhoto(photoId);
+				if(tempCode<0)delPhoto=-1;
 			}			
 		}catch (SQLException e){
 			e.printStackTrace();
@@ -1239,31 +1004,16 @@ public class MysqlDBHelper
 		}
 		finally
 		{
-			if(ps!=null){
-				try 
-				{
-					ps.close();
-				} catch (SQLException e) 
-				{
-					e.printStackTrace();
-				}
-			}
-			if(conn!=null)
-			{
-				try 
-				{
-					conn.close();
-				} catch (SQLException e) 
-				{
-					e.printStackTrace();
-				}
-			}
+			CloseConnAndStatement(conn,ps,null);
 		}
 		
-		if(delBeuCode !=-1 ){//只要删除了beauty就算成功删除了，后面的photo就暂时不管
-			return ConstantValue.operateSuccess;
+		if(delBeuCode >0){//只要删除了beauty就算成功删除了，后面的photo就暂时不管
+			if(delPhoto>0)
+				return ConstantValue.operateSuccess;
+			else
+				return ConstantValue.delBeautyButNotPhoto;
 		}else
-			return ConstantValue.deleteBeautyFailed;
+			return ConstantValue.deleRecordNotExist;
 	}
 	/**
 	 * @description when you delete beauty ,you have to delete it's photos
@@ -1278,7 +1028,7 @@ public class MysqlDBHelper
 		List<String>photoIdList = null;
 		String sql = "select photo_id  from photo where beauty_id = ? ";
 		try{
-			conn=database.getConnetion();
+			conn = ConnectionPool.getInstance().getConnection();
 			ps = conn.prepareStatement(sql);
 			ps.setString(1, beautyId);
 			ResultSet rs = ps.executeQuery();
@@ -1294,25 +1044,7 @@ public class MysqlDBHelper
 		}
 		finally
 		{
-			if(ps!=null){
-				try 
-				{
-					ps.close();
-				} catch (SQLException e) 
-				{
-					e.printStackTrace();
-				}
-			}
-			if(conn!=null)
-			{
-				try 
-				{
-					conn.close();
-				} catch (SQLException e) 
-				{
-					e.printStackTrace();
-				}
-			}
+			CloseConnAndStatement(conn,ps,null);
 		}
 		
 		if(photoIdList.size()>0){
@@ -1335,7 +1067,8 @@ public class MysqlDBHelper
 		String deletCommentSql = "delete from comment_record where photo_id = ?";
 		String deletePraiseSql = "delete from praise_record where photo_id = ?";
 		try{
-			conn = database.getConnetion();
+//			conn = database.getConnetion();
+			conn = ConnectionPool.getInstance().getConnection();
 			ps = conn.prepareStatement(deletePhotoSql);
 			ps.setString(1, photoId);
 			delPhoCode = ps.executeUpdate();
@@ -1352,30 +1085,12 @@ public class MysqlDBHelper
 		}
 		finally
 		{
-			if(ps!=null){
-				try 
-				{
-					ps.close();
-				} catch (SQLException e) 
-				{
-					e.printStackTrace();
-				}
-			}
-			if(conn!=null)
-			{
-				try 
-				{
-					conn.close();
-				} catch (SQLException e) 
-				{
-					e.printStackTrace();
-				}
-			}
+			CloseConnAndStatement(conn,ps,null);
 		}
-		if(delPhoCode !=-1 ){//自要删除photo就可以了
+		if(delPhoCode >0 ){//自要删除photo就可以了
 			return ConstantValue.operateSuccess;
 		}
-		return ConstantValue.deletePhotoFailed;
+		return ConstantValue.deleRecordNotExist;
 	}
 	/**
 	 * 
@@ -1391,7 +1106,8 @@ public class MysqlDBHelper
 		PreparedStatement ps = null;
 		int resultCode=-1;
 		try{
-			conn = database.getConnetion();
+//			conn = database.getConnetion();
+			conn = ConnectionPool.getInstance().getConnection();
 			String sql = "update beauty set "
 				     + "true_name=?,"
 				     + "user_phone_number=?,"
@@ -1416,25 +1132,7 @@ public class MysqlDBHelper
 			return ConstantValue.DBException;
 		}finally
 		{
-			if(ps!=null){
-				try 
-				{
-					ps.close();
-				} catch (SQLException e) 
-				{
-					e.printStackTrace();
-				}
-			}
-			if(conn!=null)
-			{
-				try 
-				{
-					conn.close();
-				} catch (SQLException e) 
-				{
-					e.printStackTrace();
-				}
-			}
+			CloseConnAndStatement(conn,ps,null);
 		}
 		if(resultCode >0){
 			return ConstantValue.operateSuccess;
@@ -1449,9 +1147,9 @@ public class MysqlDBHelper
 		Connection conn = null;
 		PreparedStatement ps = null;
 		int delComCode=-1;
-		String deletePhotoSql = "delete from comment_record where commentId = ?";
+		String deletePhotoSql = "delete from comment_record where comment_id = ?";
 		try{
-			conn = database.getConnetion();
+			conn = ConnectionPool.getInstance().getConnection();
 			ps = conn.prepareStatement(deletePhotoSql);
 			ps.setInt(1, commentId);
 			delComCode = ps.executeUpdate();
@@ -1462,30 +1160,12 @@ public class MysqlDBHelper
 		}
 		finally
 		{
-			if(ps!=null){
-				try 
-				{
-					ps.close();
-				} catch (SQLException e) 
-				{
-					e.printStackTrace();
-				}
-			}
-			if(conn!=null)
-			{
-				try 
-				{
-					conn.close();
-				} catch (SQLException e) 
-				{
-					e.printStackTrace();
-				}
-			}
+			CloseConnAndStatement(conn,ps,null);
 		}
-		if(delComCode !=-1 ){//自要删除photo就可以了
+		if(delComCode>0 ){//自要删除photo就可以了
 			return ConstantValue.operateSuccess;
 		}
-		return ConstantValue.deleteCommentFailed;
+		return ConstantValue.deleRecordNotExist;
 	}
 	
 	public int deleteFollow(int beautyId,String userPhoneNumber){
@@ -1494,7 +1174,8 @@ public class MysqlDBHelper
 		int delComCode=-1;
 		String deletePhotoSql = "delete from user_follow where beauty_id = ? and user_phone_number=?";
 		try{
-			conn = database.getConnetion();
+//			conn = database.getConnetion();
+			conn = ConnectionPool.getInstance().getConnection();
 			ps = conn.prepareStatement(deletePhotoSql);
 			ps.setInt(1, beautyId);
 			ps.setString(2,userPhoneNumber);
@@ -1506,30 +1187,12 @@ public class MysqlDBHelper
 		}
 		finally
 		{
-			if(ps!=null){
-				try 
-				{
-					ps.close();
-				} catch (SQLException e) 
-				{
-					e.printStackTrace();
-				}
-			}
-			if(conn!=null)
-			{
-				try 
-				{
-					conn.close();
-				} catch (SQLException e) 
-				{
-					e.printStackTrace();
-				}
-			}
+			CloseConnAndStatement(conn,ps,null);
 		}
-		if(delComCode !=-1 ){//自要删除photo就可以了
+		if(delComCode >0 ){//自要删除photo就可以了
 			return ConstantValue.operateSuccess;
 		}
-		return ConstantValue.deleteFollowFailed;
+		return ConstantValue.deleRecordNotExist;
 	}
 	
 }

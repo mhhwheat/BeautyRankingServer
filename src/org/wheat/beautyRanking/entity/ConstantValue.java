@@ -35,12 +35,10 @@ public class ConstantValue {
 
 	public static int getDataFailed=1010;
 
-	public static int deletePhotoFailed=1012;
-	public static int deleteBeautyFailed=1014;
-	public static int deleteCommentFailed=1015;
-	public static int deleteFollowFailed = 1016;
+	public static int deleRecordNotExist=1012;//要删除的记录不存在
 
-	
+
+	public static int delBeautyButNotPhoto=1017;
 	
 	
 	/**

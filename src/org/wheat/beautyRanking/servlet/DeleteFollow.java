@@ -30,7 +30,7 @@ public class DeleteFollow extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String userPhoneNumber = request.getParameter("userPhoneNumber");
-		String beautyId =request.getParameter("beautyid");
+		String beautyId =request.getParameter("beautyId");
 		if(beautyId==null||userPhoneNumber==null)
 		{
 			response.setStatus(ConstantValue.ClientParameterErr);

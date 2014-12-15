@@ -22,8 +22,9 @@ public class JsonStreamToObject {
 			}
 			if(count ==0)return null;
 			is.close();
-			String  jsonStrTemp = new String(data);
-			String jsonStr = new String (jsonStrTemp.getBytes("8859_1"),"UTF-8");
+//			String  jsonStrTemp = new String(data);
+			String jsonStr = new String (data,"utf-8");//,"UTF-8");//
+			System.out.println(jsonStr);
 			object =  HttpDataLoaderServer.fromJson(jsonStr, classType);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
