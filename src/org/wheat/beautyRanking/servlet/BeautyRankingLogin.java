@@ -20,6 +20,8 @@ import org.wheat.beautyRanking.loader.HttpDataLoaderServer;
 public class BeautyRankingLogin extends HttpServlet 
 {
 
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * Constructor of the object.
 	 */

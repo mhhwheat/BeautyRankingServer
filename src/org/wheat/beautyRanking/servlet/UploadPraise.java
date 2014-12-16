@@ -1,9 +1,6 @@
 package org.wheat.beautyRanking.servlet;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.util.HashMap;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -11,13 +8,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.wheat.beautyRanking.dbHelper.MysqlDBHelper;
-import org.wheat.beautyRanking.entity.Comment;
 import org.wheat.beautyRanking.entity.ConstantValue;
 import org.wheat.beautyRanking.entity.Praise;
-import org.wheat.beautyRanking.entity.json.CommentJson;
 import org.wheat.beautyRanking.loader.JsonStreamToObject;
-
-import com.google.gson.Gson;
 
 /**
  * Servlet implementation class UploadPraise

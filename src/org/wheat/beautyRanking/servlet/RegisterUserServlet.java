@@ -14,6 +14,7 @@ import org.wheat.beautyRanking.entity.json.UserRegisterJson;
 import org.wheat.beautyRanking.loader.HttpDataLoaderServer;
 
 public class RegisterUserServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Constructor of the object.

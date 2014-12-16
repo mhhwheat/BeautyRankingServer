@@ -1,21 +1,16 @@
 package org.wheat.beautyRanking.servlet;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
-import java.util.HashMap;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.wheat.beautyRanking.coders.Coder_Md5;
 import org.wheat.beautyRanking.dbHelper.MysqlDBHelper;
 import org.wheat.beautyRanking.entity.ConstantValue;
-import org.wheat.beautyRanking.entity.UserLogin;
 import org.wheat.beautyRanking.entity.json.BeautyIntroductionListJson;
-import org.wheat.beautyRanking.entity.json.UserLoginJson;
 import org.wheat.beautyRanking.loader.HttpDataLoaderServer;
 
 /**

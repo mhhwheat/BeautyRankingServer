@@ -1,11 +1,8 @@
 package org.wheat.beautyRanking.servlet;
 
-import java.awt.List;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Date;
-import java.util.Iterator;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletInputStream;
@@ -17,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  *@author hogachen
- *@deprecated 使用 urlConnection上传文件
+ *@description 使用 urlConnection上传文件
  */
 public class UploadPhotoUrlCon extends HttpServlet {
 	private static final long serialVersionUID = 1L;

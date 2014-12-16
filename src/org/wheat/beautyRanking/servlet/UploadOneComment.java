@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.wheat.beautyRanking.dbHelper.MysqlDBHelper;
 import org.wheat.beautyRanking.entity.Comment;
 import org.wheat.beautyRanking.entity.ConstantValue;
-import org.wheat.beautyRanking.entity.Photo;
 import org.wheat.beautyRanking.loader.JsonStreamToObject;
 
 /**

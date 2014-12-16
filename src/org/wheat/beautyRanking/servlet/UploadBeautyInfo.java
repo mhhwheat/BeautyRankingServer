@@ -1,7 +1,6 @@
 package org.wheat.beautyRanking.servlet;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -10,7 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.wheat.beautyRanking.dbHelper.MysqlDBHelper;
 import org.wheat.beautyRanking.entity.BeautyDetail;
-import org.wheat.beautyRanking.entity.BeautyIntroduction;
 import org.wheat.beautyRanking.entity.ConstantValue;
 import org.wheat.beautyRanking.loader.JsonStreamToObject;
 

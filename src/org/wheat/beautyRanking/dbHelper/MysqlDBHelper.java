@@ -18,16 +18,13 @@ import org.wheat.beautyRanking.entity.Comment;
 import org.wheat.beautyRanking.entity.ConstantValue;
 import org.wheat.beautyRanking.entity.Photo;
 import org.wheat.beautyRanking.entity.PhotoList;
-import org.wheat.beautyRanking.entity.Photo_huahua;
 import org.wheat.beautyRanking.entity.Praise;
-import org.wheat.beautyRanking.entity.PraiseRecord;
 import org.wheat.beautyRanking.entity.RequestRegisterUser;
 import org.wheat.beautyRanking.entity.UserLogin;
 import org.wheat.beautyRanking.entity.json.BeautyDetailJson;
 import org.wheat.beautyRanking.entity.json.BeautyIntroductionListJson;
 import org.wheat.beautyRanking.entity.json.PhotoListJson;
 import org.wheat.beautyRanking.loader.DateFormatTools;
-import org.wheat.beautyRanking.loader.HttpDataLoaderServer;
 
 
 public class MysqlDBHelper

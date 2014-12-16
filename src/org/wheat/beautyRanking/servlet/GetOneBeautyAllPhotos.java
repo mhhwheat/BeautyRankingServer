@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.wheat.beautyRanking.dbHelper.MysqlDBHelper;
 import org.wheat.beautyRanking.entity.ConstantValue;
-import org.wheat.beautyRanking.entity.json.BeautyIntroductionListJson;
 import org.wheat.beautyRanking.entity.json.PhotoListJson;
 import org.wheat.beautyRanking.loader.HttpDataLoaderServer;
 

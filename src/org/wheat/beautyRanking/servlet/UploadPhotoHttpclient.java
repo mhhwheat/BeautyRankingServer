@@ -1,16 +1,10 @@
 package org.wheat.beautyRanking.servlet;
-
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URLDecoder;
 
-import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -19,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * @author hogachen
  * Servlet implementation class UploadPhoto
- * @deprecated 上传一张图片到某个beauty下
+ * @description 上传一张图片到某个beauty下
  */
 public class UploadPhotoHttpclient extends HttpServlet {
 	private static final long serialVersionUID = 1L;

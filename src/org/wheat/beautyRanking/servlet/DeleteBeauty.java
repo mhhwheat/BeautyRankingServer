@@ -1,7 +1,6 @@
 package org.wheat.beautyRanking.servlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -10,11 +9,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.wheat.beautyRanking.dbHelper.MysqlDBHelper;
 import org.wheat.beautyRanking.entity.ConstantValue;
-import org.wheat.beautyRanking.entity.json.BeautyIntroductionListJson;
-import org.wheat.beautyRanking.loader.HttpDataLoaderServer;
 
 /**
- * @deprecated 创建者可以删除自己创建的beauty，当点赞数超过某个值不可以删除
+ * @description 创建者可以删除自己创建的beauty，当点赞数超过某个值不可以删除
  * Servlet implementation class DeleteBeauty
  */
 public class DeleteBeauty extends HttpServlet {

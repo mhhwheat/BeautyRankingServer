@@ -2,7 +2,6 @@ package org.wheat.beautyRanking.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -15,6 +14,7 @@ import org.wheat.beautyRanking.entity.json.BeautyIntroductionListJson;
 import org.wheat.beautyRanking.loader.HttpDataLoaderServer;
 
 public class GetSumPage extends HttpServlet {
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Constructor of the object.

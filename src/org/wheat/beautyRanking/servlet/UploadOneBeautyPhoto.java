@@ -1,7 +1,6 @@
 package org.wheat.beautyRanking.servlet;
 
 import java.io.IOException;
-import java.util.Date;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -9,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.wheat.beautyRanking.dbHelper.MysqlDBHelper;
-import org.wheat.beautyRanking.entity.BeautyDetail;
 import org.wheat.beautyRanking.entity.ConstantValue;
 import org.wheat.beautyRanking.entity.Photo;
 import org.wheat.beautyRanking.loader.DateFormatTools;

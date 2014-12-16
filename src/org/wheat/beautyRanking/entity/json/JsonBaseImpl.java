@@ -2,7 +2,6 @@ package org.wheat.beautyRanking.entity.json;
 
 import java.io.Serializable;
 
-import org.wheat.beautyRanking.entity.ErrMsg;
 import org.wheat.beautyRanking.loader.HttpDataLoaderServer;
 
 import com.google.gson.annotations.SerializedName;
@@ -10,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
  * @author wheat
  * @Date 14-9-14
  * @Time 下午21:29
- * @deprecated 用来传送给客户端数据封装类，所有的数据统一为mCode(服务端响应状态）
+ * @description 用来传送给客户端数据封装类，所有的数据统一为mCode(服务端响应状态）
  * 			   mData(要传送的数据，数据本身也是可以json化) mErrMsg(服务端错误信息)
  */
 public class JsonBaseImpl <T> implements JsonBase<T>,Serializable

@@ -1,9 +1,7 @@
 package org.wheat.beautyRanking.servlet;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
-import java.util.HashMap;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -14,7 +12,6 @@ import org.wheat.beautyRanking.dbHelper.MysqlDBHelper;
 import org.wheat.beautyRanking.loader.HttpDataLoaderServer;
 import org.wheat.beautyRanking.entity.ConstantValue;
 import org.wheat.beautyRanking.entity.json.BeautyIntroductionListJson;
-import org.wheat.beautyRanking.entity.json.PhotoListJson;
 /**
  * Servlet implementation class GetMyFollowPage
  */

@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.HashMap;
 
 import javax.servlet.ServletException;
@@ -16,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.wheat.beautyRanking.loader.HttpDataLoaderServer;
 
 public class DownLoadPhotoServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
 	private static final String AVATAR_DIRECTORY="D:/BeautyRankingPhoto/avatar/";
 	/**
 	 * Constructor of the object.
