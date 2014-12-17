@@ -39,6 +39,7 @@ public class GetOneBeautyAllPhotos extends HttpServlet {
 		// TODO Auto-generated method stub
 		String firstIndex=request.getParameter("firstIndex");
 		String count=request.getParameter("count");
+		String userPhoneNumber = request.getParameter("userPhoneNumber");
 		if(firstIndex==null||count==null){
 			response.setStatus(ConstantValue.ClientParameterErr);
 			return;
@@ -51,7 +52,8 @@ public class GetOneBeautyAllPhotos extends HttpServlet {
 			return;
 		}
 		MysqlDBHelper dbHelper=MysqlDBHelper.getInstance();
-		PhotoListJson photoListJson=dbHelper.getPhotoList(Integer.parseInt(firstIndex), Integer.parseInt(count),Integer.parseInt(beautyId));
+		PhotoListJson photoListJson=dbHelper.getPhotoList(Integer.parseInt(firstIndex), 
+				Integer.parseInt(count),Integer.parseInt(beautyId),userPhoneNumber);
 		String json=HttpDataLoaderServer.toJson(photoListJson);
 		String result=new String(json.getBytes("UTF-8"),"8859_1");
 		PrintWriter out=response.getWriter();

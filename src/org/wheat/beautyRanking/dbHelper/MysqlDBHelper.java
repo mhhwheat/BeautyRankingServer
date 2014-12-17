@@ -404,7 +404,7 @@ public class MysqlDBHelper
 	 * @param beaytyId beautyId
 	 * @return PhotoListJson 某个beautyId下的所有照片信息，图片返回路径信息
 	 */
-	public PhotoListJson getPhotoList(int firstIndex,int count,int beaytyId)
+	public PhotoListJson getPhotoList(int firstIndex,int count,int beaytyId,String userPhoneNumber)
 	{
 		Connection conn=null;
 		PreparedStatement ps=null;
@@ -416,7 +416,7 @@ public class MysqlDBHelper
 		{
 			conn = ConnectionPool.getInstance().getConnection();
 			String querySql="select beauty_id , photo_id , user_phone_number ,praise_count,"
-					+ " comment_count , photo_path ,upload_time from photo where beauty_id=?"
+					+ " comment_count , photo_path ,upload_time ,description from photo where beauty_id=?"
 					+ " order by photo_id asc limit ?,?";
 			
 			ps=conn.prepareStatement(querySql);
@@ -434,6 +434,7 @@ public class MysqlDBHelper
 				temp.setCommentCount(rs.getInt("comment_count"));
 				temp.setPhotoPath(rs.getString("photo_path"));
 				temp.setUploadTime(DateFormatTools.sqlDate2UtilDate(rs.getDate("upload_time")));
+				temp.setDescription(rs.getString("description"));
 				list.add(temp);
 			}
 		}catch(Exception e){
@@ -448,6 +449,10 @@ public class MysqlDBHelper
 		}
 		if(list.size()>0)
 		{
+			//判断请求该页面的用户是否点过赞
+			for(Photo photo:list){
+				photo.setIspraise(isPrase(photo.getPhotoId(),userPhoneNumber,conn));
+			}
 			photoList=new PhotoList();
 			photoList.setPhotoList(list);
 			photoListJson=new PhotoListJson();
@@ -459,7 +464,26 @@ public class MysqlDBHelper
 		return photoListJson;
 	}
 	
-	
+	public static boolean isPrase(int photoId,String userPhoneNumber,
+			Connection conn ){
+		String querySql = "select count(*) from praise_record where user_phone_number = ? and photo_id = ?";
+		boolean isPraise=false;
+		try {
+			
+			PreparedStatement ps=conn.prepareStatement(querySql);
+			ps.setInt(1, photoId);
+			ps.setString(2, userPhoneNumber);
+			ResultSet res = ps.executeQuery();
+			if(res.next()){
+				isPraise=true;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return isPraise;
+		
+	}
 	/**
 	 * 查找我的关注页面
 	 * @param userPhoneNumber  要查找的用户id
@@ -672,8 +696,8 @@ public class MysqlDBHelper
 		{
 			conn = ConnectionPool.getInstance().getConnection();
 			String querySql="insert into photo (beauty_id ,photo_path,user_phone_number,"
-					+ "upload_time,comment_count,praise_count) "
-					+ "values (?,?,?,?,?,?)";
+					+ "upload_time,comment_count,praise_count,description) "
+					+ "values (?,?,?,?,?,?,?)";
 			ps=conn.prepareStatement(querySql);
 			ps.setInt(1, photo.getBeautyId());
 			ps.setString(2, photo.getPhotoPath());
@@ -682,6 +706,7 @@ public class MysqlDBHelper
 			ps.setDate(4, DateFormatTools.utilDate2SqlDate(photo.getUploadTime()));//2014-11-01 12:00:00
 			ps.setInt(5,photo.getCommentCount());
 			ps.setInt(6, photo.getPraiseCount());
+			ps.setString(7, photo.getDescription());
 			successCount=ps.executeUpdate();
 			
 		}catch(Exception e){

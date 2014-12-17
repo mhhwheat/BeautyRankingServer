@@ -8,7 +8,11 @@ import java.util.Date;
 import com.google.gson.annotations.SerializedName;
 public class Photo  
 {
-
+	//是否被赞过了
+	@SerializedName("isPraise")
+	private boolean isPraise;
+	@SerializedName("description")
+	private String description;
 	//属于哪个beauty的beautyId
 	@SerializedName("beautyId")
 	private int beautyId;
@@ -37,6 +41,20 @@ public class Photo
 		this.photoPath=photoPath;
 		this.userPhoneNumber=userPhoneNumber;
 		this.uploadTime=uploadTime;
+	}
+	public void setDescription(String description)
+	{
+		this.description=description;
+	}
+	public String getDescription()
+	{
+		return this.description;
+	}
+	public void setIspraise(boolean praise){
+		this.isPraise=praise;
+	}
+	public boolean getIsPraise(){
+		return this.isPraise;
 	}
 	public void setBeautyId(int beautyId){
 		this.beautyId=beautyId;
