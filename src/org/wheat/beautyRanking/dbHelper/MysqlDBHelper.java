@@ -416,7 +416,7 @@ public class MysqlDBHelper
 		{
 			conn = ConnectionPool.getInstance().getConnection();
 			String querySql="select beauty_id , photo_id , user_phone_number ,praise_count,"
-					+ " comment_count , photo_path ,upload_time ,description from photo where beauty_id=?"
+					+ " comment_count , photo_path ,upload_time ,photo_description from photo where beauty_id=?"
 					+ " order by photo_id asc limit ?,?";
 			
 			ps=conn.prepareStatement(querySql);
@@ -434,7 +434,7 @@ public class MysqlDBHelper
 				temp.setCommentCount(rs.getInt("comment_count"));
 				temp.setPhotoPath(rs.getString("photo_path"));
 				temp.setUploadTime(DateFormatTools.sqlDate2UtilDate(rs.getDate("upload_time")));
-				temp.setDescription(rs.getString("description"));
+				temp.setPhotoDescription(rs.getString("photo_description"));
 				list.add(temp);
 			}
 		}catch(Exception e){
@@ -452,6 +452,7 @@ public class MysqlDBHelper
 			//判断请求该页面的用户是否点过赞
 			for(Photo photo:list){
 				photo.setIspraise(isPrase(photo.getPhotoId(),userPhoneNumber,conn));
+				setNicknameAndAvatar(photo,conn);
 			}
 			photoList=new PhotoList();
 			photoList.setPhotoList(list);
@@ -463,23 +464,46 @@ public class MysqlDBHelper
 		photoListJson.setCode(ConstantValue.DataNotFoundInDB);
 		return photoListJson;
 	}
-	
+	public static void setNicknameAndAvatar(Photo photo,Connection conn){
+		String querySql = "select count nickname,avatar_path from user_table where user_phone_number = ?";
+		ResultSet res =null;
+		PreparedStatement ps=null;
+		try {
+			
+			ps=conn.prepareStatement(querySql);
+			ps.setString(1, photo.getUserPhoneNumber());
+			res= ps.executeQuery();
+			while(res.next()){
+				photo.setNickName(res.getString("nickname"));
+				photo.setAvatarPath(res.getString("avatar_path"));
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally{
+			CloseConnAndStatement(null,ps,res);
+		}
+	}
 	public static boolean isPrase(int photoId,String userPhoneNumber,
 			Connection conn ){
 		String querySql = "select count(*) from praise_record where user_phone_number = ? and photo_id = ?";
 		boolean isPraise=false;
+		ResultSet res =null;
+		PreparedStatement ps=null;
 		try {
 			
-			PreparedStatement ps=conn.prepareStatement(querySql);
+			ps=conn.prepareStatement(querySql);
 			ps.setInt(1, photoId);
 			ps.setString(2, userPhoneNumber);
-			ResultSet res = ps.executeQuery();
+			res = ps.executeQuery();
 			if(res.next()){
 				isPraise=true;
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}finally{
+			CloseConnAndStatement(null,ps,res);
 		}
 		return isPraise;
 		
@@ -706,7 +730,7 @@ public class MysqlDBHelper
 			ps.setDate(4, DateFormatTools.utilDate2SqlDate(photo.getUploadTime()));//2014-11-01 12:00:00
 			ps.setInt(5,photo.getCommentCount());
 			ps.setInt(6, photo.getPraiseCount());
-			ps.setString(7, photo.getDescription());
+			ps.setString(7, photo.getPhotoDescription());
 			successCount=ps.executeUpdate();
 			
 		}catch(Exception e){
