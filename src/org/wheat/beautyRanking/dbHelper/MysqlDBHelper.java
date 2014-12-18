@@ -282,7 +282,10 @@ public class MysqlDBHelper
 			beautyList.setIntroductionList(list);
 			beautyIntroductionListJson=new BeautyIntroductionListJson();
 			beautyIntroductionListJson.setData(beautyList);
+			beautyIntroductionListJson.setCode(ConstantValue.operateSuccess);
 		}
+		beautyIntroductionListJson= new BeautyIntroductionListJson();
+		beautyIntroductionListJson.setCode(ConstantValue.DataNotFoundInDB);
 		return beautyIntroductionListJson;
 	}
 	
@@ -336,7 +339,10 @@ public class MysqlDBHelper
 			beautyList.setIntroductionList(list);
 			beautyIntroductionListJson=new BeautyIntroductionListJson();
 			beautyIntroductionListJson.setData(beautyList);
+			beautyIntroductionListJson.setCode(ConstantValue.operateSuccess);
 		}
+		beautyIntroductionListJson= new BeautyIntroductionListJson();
+		beautyIntroductionListJson.setCode(ConstantValue.DataNotFoundInDB);
 		return beautyIntroductionListJson;
 	}
 	private String getDateBefore(int nums)
@@ -391,7 +397,11 @@ public class MysqlDBHelper
 			beautyList.setIntroductionList(list);
 			beautyIntroductionListJson=new BeautyIntroductionListJson();
 			beautyIntroductionListJson.setData(beautyList);
+			beautyIntroductionListJson.setCode(ConstantValue.operateSuccess);
+			return beautyIntroductionListJson;
 		}
+		beautyIntroductionListJson=new BeautyIntroductionListJson();
+		beautyIntroductionListJson.setCode(ConstantValue.DataNotFoundInDB);
 		return beautyIntroductionListJson;
 	}
 	
@@ -458,9 +468,10 @@ public class MysqlDBHelper
 			photoList.setPhotoList(list);
 			photoListJson=new PhotoListJson();
 			photoListJson.setData(photoList);
+			photoListJson.setCode(ConstantValue.operateSuccess);
+			return photoListJson;
 		}
 		photoListJson=new PhotoListJson();
-		photoListJson.setData(null);
 		photoListJson.setCode(ConstantValue.DataNotFoundInDB);
 		return photoListJson;
 	}
@@ -619,6 +630,7 @@ public class MysqlDBHelper
 			beautyList.setIntroductionList(list);
 			beautyIntroductionListJson=new BeautyIntroductionListJson();
 			beautyIntroductionListJson.setData(beautyList);
+			beautyIntroductionListJson.setCode(ConstantValue.operateSuccess);
 			return beautyIntroductionListJson;
 		}else{
 			beautyIntroductionListJson=new BeautyIntroductionListJson();
