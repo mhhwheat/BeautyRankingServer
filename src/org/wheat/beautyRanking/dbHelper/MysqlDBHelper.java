@@ -465,7 +465,7 @@ public class MysqlDBHelper
 		return photoListJson;
 	}
 	public static void setNicknameAndAvatar(Photo photo,Connection conn){
-		String querySql = "select count nickname,avatar_path from user_table where user_phone_number = ?";
+		String querySql = "select  nickname,avatar_path from user_table where user_phone_number = ?";
 		ResultSet res =null;
 		PreparedStatement ps=null;
 		try {
