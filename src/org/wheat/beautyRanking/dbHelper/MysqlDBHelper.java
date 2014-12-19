@@ -497,7 +497,7 @@ public class MysqlDBHelper
 	}
 	public static boolean isPrase(int photoId,String userPhoneNumber,
 			Connection conn ){
-		String querySql = "select count(*) from praise_record where user_phone_number = ? and photo_id = ?";
+		String querySql = "select count(*) as count from praise_record where user_phone_number = ? and photo_id = ?";
 		boolean isPraise=false;
 		ResultSet res =null;
 		PreparedStatement ps=null;
@@ -508,7 +508,11 @@ public class MysqlDBHelper
 			ps.setString(2, userPhoneNumber);
 			res = ps.executeQuery();
 			if(res.next()){
-				isPraise=true;
+				int count = res.getInt("count");
+				if(count>0){
+					isPraise=true;
+				}
+				
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
