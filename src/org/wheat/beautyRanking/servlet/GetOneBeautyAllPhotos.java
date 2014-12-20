@@ -40,17 +40,13 @@ public class GetOneBeautyAllPhotos extends HttpServlet {
 		String firstIndex=request.getParameter("firstIndex");
 		String count=request.getParameter("count");
 		String userPhoneNumber = request.getParameter("userPhoneNumber");
-		if(firstIndex==null||count==null){
-			response.setStatus(ConstantValue.ClientParameterErr);
-			return;
-		}
 		String beautyId=request.getParameter("beautyId");
-		System.out.println("in doget "+ beautyId);
-		if(beautyId==null)
-		{
+		if(firstIndex==null||count==null||beautyId==null){
 			response.setStatus(ConstantValue.ClientParameterErr);
 			return;
 		}
+		
+		System.out.println("in doget "+ beautyId);
 		MysqlDBHelper dbHelper=MysqlDBHelper.getInstance();
 		PhotoListJson photoListJson=dbHelper.getPhotoList(Integer.parseInt(firstIndex), 
 				Integer.parseInt(count),Integer.parseInt(beautyId),userPhoneNumber);
