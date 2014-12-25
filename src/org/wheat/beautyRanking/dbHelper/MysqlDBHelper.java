@@ -408,7 +408,119 @@ public class MysqlDBHelper
 	
 	
 /*********************************************************************************************/	
-	
+	public PhotoListJson getMyFollowPhoto(int firstIndex,int count,String userPhoneNumber)
+	{
+		Connection conn=null;
+		PreparedStatement ps=null;
+		ResultSet rs=null;
+		ArrayList<Photo> list=new ArrayList<Photo>();
+		PhotoList photoList;
+		PhotoListJson photoListJson=null;
+		try
+		{
+			conn = ConnectionPool.getInstance().getConnection();
+			String querySql="select beauty_id , photo_id , user_phone_number ,praise_count,"
+					+ " comment_count , photo_path ,upload_time ,photo_description from photo where photo_id in"
+					+ "(select photo_id from  user_follow where user_phone_number=?) "
+					+ " order by photo_id asc limit ?,?";
+			
+			ps=conn.prepareStatement(querySql);
+			ps.setString(1, userPhoneNumber);
+			ps.setInt(2, firstIndex);
+			ps.setInt(3, count);
+			rs=ps.executeQuery();
+			while(rs.next())
+			{
+				Photo temp=new Photo();
+				temp.setBeautyId(rs.getInt("beauty_id"));
+				temp.setPhotoId(rs.getInt("photo_id"));
+				temp.setUserPhoneNumber(rs.getString("user_phone_number"));
+				temp.setPraiseCount(rs.getInt("praise_count"));
+				temp.setCommentCount(rs.getInt("comment_count"));
+				temp.setPhotoPath(rs.getString("photo_path"));
+				temp.setUploadTime(DateFormatTools.sqlDate2UtilDate(rs.getDate("upload_time")));
+				temp.setPhotoDescription(rs.getString("photo_description"));
+				list.add(temp);
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			photoListJson=new PhotoListJson();
+			photoListJson.setData(null);
+			photoListJson.setCode(ConstantValue.DBException);
+		}
+		finally
+		{
+			CloseConnAndStatement(conn,ps,rs);
+		}
+		if(list.size()>0)
+		{
+			photoList=new PhotoList();
+			photoList.setPhotoList(list);
+			photoListJson=new PhotoListJson();
+			photoListJson.setData(photoList);
+			photoListJson.setCode(ConstantValue.operateSuccess);
+			return photoListJson;
+		}
+		photoListJson=new PhotoListJson();
+		photoListJson.setCode(ConstantValue.DataNotFoundInDB);
+		return photoListJson;
+	}
+	public PhotoListJson getMyCreatePhoto(int firstIndex,int count,String userPhoneNumber)
+	{
+		Connection conn=null;
+		PreparedStatement ps=null;
+		ResultSet rs=null;
+		ArrayList<Photo> list=new ArrayList<Photo>();
+		PhotoList photoList;
+		PhotoListJson photoListJson=null;
+		try
+		{
+			conn = ConnectionPool.getInstance().getConnection();
+			String querySql="select beauty_id , photo_id , user_phone_number ,praise_count,"
+					+ " comment_count , photo_path ,upload_time ,photo_description from photo where user_phone_number=?"
+					+ " order by photo_id asc limit ?,?";
+			
+			ps=conn.prepareStatement(querySql);
+			ps.setString(1, userPhoneNumber);
+			ps.setInt(2, firstIndex);
+			ps.setInt(3, count);
+			rs=ps.executeQuery();
+			while(rs.next())
+			{
+				Photo temp=new Photo();
+				temp.setBeautyId(rs.getInt("beauty_id"));
+				temp.setPhotoId(rs.getInt("photo_id"));
+				temp.setUserPhoneNumber(rs.getString("user_phone_number"));
+				temp.setPraiseCount(rs.getInt("praise_count"));
+				temp.setCommentCount(rs.getInt("comment_count"));
+				temp.setPhotoPath(rs.getString("photo_path"));
+				temp.setUploadTime(DateFormatTools.sqlDate2UtilDate(rs.getDate("upload_time")));
+				temp.setPhotoDescription(rs.getString("photo_description"));
+				list.add(temp);
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			photoListJson=new PhotoListJson();
+			photoListJson.setData(null);
+			photoListJson.setCode(ConstantValue.DBException);
+		}
+		finally
+		{
+			CloseConnAndStatement(conn,ps,rs);
+		}
+		if(list.size()>0)
+		{
+			photoList=new PhotoList();
+			photoList.setPhotoList(list);
+			photoListJson=new PhotoListJson();
+			photoListJson.setData(photoList);
+			photoListJson.setCode(ConstantValue.operateSuccess);
+			return photoListJson;
+		}
+		photoListJson=new PhotoListJson();
+		photoListJson.setCode(ConstantValue.DataNotFoundInDB);
+		return photoListJson;
+	}
 	/**
 	 * 查找每一个beauty下的所有图片信息
 	 * @param beaytyId beautyId

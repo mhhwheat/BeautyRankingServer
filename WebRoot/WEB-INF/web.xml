@@ -140,6 +140,18 @@
   	<description></description>
   	<servlet-class>org.wheat.beautyRanking.servlet.DeleteFollow</servlet-class>
   </servlet>
+  <servlet>
+  	<servlet-name>GetMyCreatePhoto</servlet-name>
+  	<display-name>GetMyCreatePhoto</display-name>
+  	<description></description>
+  	<servlet-class>org.wheat.beautyRanking.servlet.GetMyCreatePhoto</servlet-class>
+  </servlet>
+  <servlet>
+  	<servlet-name>GetMyFollowPhoto</servlet-name>
+  	<display-name>GetMyFollowPhoto</display-name>
+  	<description></description>
+  	<servlet-class>org.wheat.beautyRanking.servlet.GetMyFollowPhoto</servlet-class>
+  </servlet>
 
 
 
@@ -238,6 +250,14 @@
   <servlet-mapping>
   	<servlet-name>DeleteFollow</servlet-name>
   	<url-pattern>/DeleteFollow</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>GetMyCreatePhoto</servlet-name>
+  	<url-pattern>/GetMyCreatePhoto</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>GetMyFollowPhoto</servlet-name>
+  	<url-pattern>/GetMyFollowPhoto</url-pattern>
   </servlet-mapping>
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
