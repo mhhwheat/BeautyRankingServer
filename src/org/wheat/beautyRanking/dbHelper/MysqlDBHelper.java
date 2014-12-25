@@ -15,6 +15,7 @@ import org.wheat.beautyRanking.entity.BeautyDetail;
 import org.wheat.beautyRanking.entity.BeautyIntroduction;
 import org.wheat.beautyRanking.entity.BeautyIntroductionList;
 import org.wheat.beautyRanking.entity.Comment;
+import org.wheat.beautyRanking.entity.CommentList;
 import org.wheat.beautyRanking.entity.ConstantValue;
 import org.wheat.beautyRanking.entity.Photo;
 import org.wheat.beautyRanking.entity.PhotoList;
@@ -23,6 +24,7 @@ import org.wheat.beautyRanking.entity.RequestRegisterUser;
 import org.wheat.beautyRanking.entity.UserLogin;
 import org.wheat.beautyRanking.entity.json.BeautyDetailJson;
 import org.wheat.beautyRanking.entity.json.BeautyIntroductionListJson;
+import org.wheat.beautyRanking.entity.json.CommentListJson;
 import org.wheat.beautyRanking.entity.json.PhotoListJson;
 import org.wheat.beautyRanking.loader.DateFormatTools;
 
@@ -573,8 +575,8 @@ public class MysqlDBHelper
 		{
 			//判断请求该页面的用户是否点过赞
 			for(Photo photo:list){
-				photo.setIspraise(isPrase(photo.getPhotoId(),userPhoneNumber,conn));
-				setNicknameAndAvatar(photo,conn);
+				photo.setIspraise(isPrase(photo.getPhotoId(),userPhoneNumber));
+				setNicknameAndAvatar(photo);
 			}
 			photoList=new PhotoList();
 			photoList.setPhotoList(list);
@@ -587,12 +589,13 @@ public class MysqlDBHelper
 		photoListJson.setCode(ConstantValue.DataNotFoundInDB);
 		return photoListJson;
 	}
-	public static void setNicknameAndAvatar(Photo photo,Connection conn){
+	public static void setNicknameAndAvatar(Photo photo){
+		Connection conn=null;
 		String querySql = "select  nickname,avatar_path from user_table where user_phone_number = ?";
 		ResultSet res =null;
 		PreparedStatement ps=null;
 		try {
-			
+			conn = ConnectionPool.getInstance().getConnection();
 			ps=conn.prepareStatement(querySql);
 			ps.setString(1, photo.getUserPhoneNumber());
 			res= ps.executeQuery();
@@ -604,17 +607,18 @@ public class MysqlDBHelper
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally{
-			CloseConnAndStatement(null,ps,res);
+			CloseConnAndStatement(conn,ps,res);
 		}
 	}
-	public static boolean isPrase(int photoId,String userPhoneNumber,
-			Connection conn ){
+	public static boolean isPrase(int photoId,String userPhoneNumber )
+	{
+		Connection conn=null;
 		String querySql = "select count(*) as count from praise_record where user_phone_number = ? and photo_id = ?";
 		boolean isPraise=false;
 		ResultSet res =null;
 		PreparedStatement ps=null;
 		try {
-			
+			conn = ConnectionPool.getInstance().getConnection();
 			ps=conn.prepareStatement(querySql);
 			ps.setInt(1, photoId);
 			ps.setString(2, userPhoneNumber);
@@ -630,11 +634,101 @@ public class MysqlDBHelper
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally{
-			CloseConnAndStatement(null,ps,res);
+			CloseConnAndStatement(conn,ps,res);
 		}
 		return isPraise;
 		
 	}
+	
+	/**
+	 * 查找一张图片的评论
+	 * @param firstIndex
+	 * @param count
+	 * @param photoId
+	 * @return
+	 */
+	public CommentListJson getCommentList(int firstIndex,int count,int photoId)
+	{
+		
+		Connection conn=null;
+		PreparedStatement ps=null;
+		ResultSet rs=null;
+		List<Comment> list=new ArrayList<Comment>();
+		CommentList commentList;
+		CommentListJson commentListJson=null;
+		try{
+			conn=ConnectionPool.getInstance().getConnection();
+			String querySql="select * from comment_record where photo_id=? order by comment_time desc limit ?,?";
+			ps=conn.prepareStatement(querySql);
+			ps.setInt(1, photoId);
+			ps.setInt(2, firstIndex);
+			ps.setInt(3, count);
+			rs=ps.executeQuery();
+			while(rs.next())
+			{
+				Comment temp=new Comment();
+				temp.setCommentID(rs.getInt("comment_id"));
+				temp.setPhotoID(photoId);
+				temp.setUserPhoneNumber(rs.getString("user_phone_number"));
+				temp.setCommentTime(rs.getDate("comment_time"));
+				temp.setCommentContent(rs.getString("comment_content"));
+				list.add(temp);
+			}
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+			commentListJson=new CommentListJson();
+			commentListJson.setData(null);
+			commentListJson.setCode(ConstantValue.DBException);
+			return commentListJson;
+		}
+		
+		finally
+		{
+			CloseConnAndStatement(conn,ps,rs);
+		}
+		
+		if(list.size()>0)
+		{
+			for(Comment comment:list)
+			{
+				setNickNameAndAvatar(comment);
+			}
+			commentList=new CommentList();
+			commentList.setCommentList(list);
+			commentListJson=new CommentListJson();
+			commentListJson.setData(commentList);
+			commentListJson.setCode(ConstantValue.operateSuccess);
+			return commentListJson;
+		}
+		commentListJson=new CommentListJson();
+		commentListJson.setCode(ConstantValue.DataNotFoundInDB);
+		return commentListJson;
+	}
+	
+	public static void setNickNameAndAvatar(Comment comment)
+	{
+		Connection conn=null;
+		String querySql = "select  nickname,avatar_path from user_table where user_phone_number = ?";
+		ResultSet res =null;
+		PreparedStatement ps=null;
+		try {
+			conn=ConnectionPool.getInstance().getConnection();
+			ps=conn.prepareStatement(querySql);
+			ps.setString(1, comment.getUserPhoneNumber());
+			res= ps.executeQuery();
+			while(res.next()){
+				comment.setUserNickName(res.getString("nickname"));
+				comment.setUserAvatar(res.getString("avatar_path"));
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally{
+			CloseConnAndStatement(conn,ps,res);
+		}
+	}
+	
 	/**
 	 * 查找我的关注页面
 	 * @param userPhoneNumber  要查找的用户id
@@ -972,12 +1066,16 @@ public class MysqlDBHelper
 	 * @param values 需要插入的数据
 	 * @return int 插入数据库的代码
 	 */
-	public int updateCommentCount(int photoId,Connection conn,PreparedStatement ps)
+	public int updateCommentCount(int photoId)
 	{
+		Connection conn=null;
+		PreparedStatement ps=null;
 		int  updateCount=-1;
 		try
 		{
 			String querySql="update photo set comment_count=comment_count+1 where photo_id =?";
+			conn = ConnectionPool.getInstance().getConnection();
+			ps=conn.prepareStatement(querySql);
 			ps.setInt(1, photoId);
 			updateCount=ps.executeUpdate();
 			
@@ -1020,7 +1118,7 @@ public class MysqlDBHelper
 			
 			insertCommentCount=ps.executeUpdate();
 			if(insertCommentCount>0)
-				updateCommentCount=updateCommentCount(comment.getPhotoID(),conn,ps);
+				updateCommentCount=updateCommentCount(comment.getPhotoID());
 			else
 				return ConstantValue.InsertDbFailed;
 			
