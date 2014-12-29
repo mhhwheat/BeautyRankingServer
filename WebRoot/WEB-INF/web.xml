@@ -152,6 +152,18 @@
   	<description></description>
   	<servlet-class>org.wheat.beautyRanking.servlet.GetMyFollowPhoto</servlet-class>
   </servlet>
+  <servlet>
+  	<servlet-name>IfServerOk</servlet-name>
+  	<display-name>IfServerOk</display-name>
+  	<description></description>
+  	<servlet-class>org.wheat.beautyRanking.servlet.IfServerOk</servlet-class>
+  </servlet>
+  <servlet>
+  	<servlet-name>sendFeedbackMsg</servlet-name>
+  	<display-name>sendFeedbackMsg</display-name>
+  	<description></description>
+  	<servlet-class>org.wheat.beautyRanking.servlet.sendFeedbackMsg</servlet-class>
+  </servlet>
 
 
 
@@ -258,6 +270,14 @@
   <servlet-mapping>
   	<servlet-name>GetMyFollowPhoto</servlet-name>
   	<url-pattern>/GetMyFollowPhoto</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>IfServerOk</servlet-name>
+  	<url-pattern>/IfServerOk</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>sendFeedbackMsg</servlet-name>
+  	<url-pattern>/sendFeedbackMsg</url-pattern>
   </servlet-mapping>
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>

@@ -108,8 +108,11 @@ public class BeautyRankingLogin extends HttpServlet
 			userJson.setData(null);
 		}
 		else
-		{
-			if(postData.get("password").equals(Coder_Md5.md5(user.getPassword())))
+		{   System.out.println("postData.get(password) "+postData.get("password"));
+			System.out.println("user.getPassword(): "+user.getPassword());
+//			System.out.println("Coder_Md5.md5(postData.get(password))  "
+//			+Coder_Md5.md5(postData.get("password")));
+			if(postData.get("password").equals(user.getPassword()))
 			{
 				user.setPassword(null);
 				userJson.setData(user);

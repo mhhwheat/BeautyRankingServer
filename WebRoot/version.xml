@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<info>
+	<version>2.0</version>
+	<url>http://192.168.235.107:8080/BeautyRankingServer/BeautyRanking.apk</url>
+	<description>检测到最新版本，请及时更新！</description>
+	<url_server>http://192.168.235.107:8080/BeautyRankingServer/version.xml</url_server>
+</info>

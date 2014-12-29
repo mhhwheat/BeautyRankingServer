@@ -75,7 +75,7 @@ public class MysqlDBHelper
 			{
 				user.setUserPhoneNumber(rs.getString("user_phone_number"));
 				user.setPassword(rs.getString("password"));
-				user.setNikeName(rs.getString("nikename"));
+				user.setNikeName(rs.getString("nickname"));
 				user.setSchool(rs.getString("school"));
 				user.setAdmissionYear(rs.getInt("admission_year"));
 				user.setSex(rs.getString("sex"));
@@ -96,7 +96,7 @@ public class MysqlDBHelper
 		try
 		{
 			conn = ConnectionPool.getInstance().getConnection();
-			String insql="insert into user_table(user_phone_number,password,nikename,school,admission_year,sex) values(?,?,?,?,?,?)";
+			String insql="insert into user_table(user_phone_number,password,nickname,school,admission_year,sex) values(?,?,?,?,?,?)";
 			ps=conn.prepareStatement(insql);
 			ps.setString(1, user.get("userPhoneNumber"));
 			ps.setString(2, user.get("password"));
@@ -1480,4 +1480,32 @@ public class MysqlDBHelper
 		return ConstantValue.deleRecordNotExist;
 	}
 	
+	
+	
+	public int insertFeedbackMsg(String userPhoneNumber,String feedbackmsg){
+		Connection conn = null;
+		PreparedStatement ps = null;
+		int insertFeedbackCode=-1;
+		String insertFeedback = "insert into  feedback_msg (user_phone_number,feedbackmsg) values (?,?)";
+		try{
+//			conn = database.getConnetion();
+			conn = ConnectionPool.getInstance().getConnection();
+			ps = conn.prepareStatement(insertFeedback);
+			ps.setString(1, userPhoneNumber);
+			ps.setString(2,feedbackmsg);
+			insertFeedbackCode = ps.executeUpdate();
+		}catch (SQLException e){
+			
+			e.printStackTrace();
+			return ConstantValue.DBException;
+		}
+		finally
+		{
+			CloseConnAndStatement(conn,ps,null);
+		}
+		if(insertFeedbackCode >0 ){//自要删除photo就可以了
+			return ConstantValue.operateSuccess;
+		}
+		return ConstantValue.InsertDbFailed;
+	}
 }
