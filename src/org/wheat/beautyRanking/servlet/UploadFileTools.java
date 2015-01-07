@@ -8,13 +8,15 @@ import java.io.OutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.wheat.beautyRanking.entity.ConstantValue;
+
 public class UploadFileTools {
 
 	public static void UploadOriginPhotoHttpClient(HttpServletRequest request,
 			HttpServletResponse response) throws Exception{
 		System.out.println("in do post method0");
 		String PhotoName = request.getParameter("PhotoName");
-		String filePath = "D:/BeautyRankingPhoto/recive_photo/";
+		String filePath = ConstantValue.AVATAR_DIRECTORY;
 		// 定义上载文件的最大字节
 		int MAX_SIZE = 102400 * 102400;
 		// 声明文件读入类

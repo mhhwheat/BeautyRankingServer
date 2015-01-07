@@ -12,11 +12,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.wheat.beautyRanking.entity.ConstantValue;
 import org.wheat.beautyRanking.loader.HttpDataLoaderServer;
 
 public class DownLoadPhotoServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static final String AVATAR_DIRECTORY="D:/BeautyRankingPhoto/avatar/";
+	
 	/**
 	 * Constructor of the object.
 	 */
@@ -46,11 +47,12 @@ public class DownLoadPhotoServlet extends HttpServlet {
 			throws ServletException, IOException {
 		String path=request.getParameter("name");
 		System.out.println("downloap image----->"+path);
-		File file=new File(AVATAR_DIRECTORY+path);
+		File file=new File(ConstantValue.AVATAR_DIRECTORY+path);
 		if(!file.exists()||file.isDirectory())
 		{
 			//文件不存在或者该路径是目录
 			System.out.println("FileNotFullexception------------>");
+			return;
 		}
 		FileInputStream fis=new FileInputStream(file);
 		byte[] buf = new byte[1024];
@@ -85,7 +87,7 @@ public class DownLoadPhotoServlet extends HttpServlet {
 		System.out.println("step in downLoad ------->");
 		HashMap<String , String > postData=HttpDataLoaderServer.getParamsFromEntity(request);
 		System.out.println(postData.get("path")+"------------>");
-		File file=new File(AVATAR_DIRECTORY+postData.get("path"));
+		File file=new File(ConstantValue.AVATAR_DIRECTORY+postData.get("path"));
 		if(!file.exists()||file.isDirectory())
 		{
 			//文件不存在或者该路径是目录
