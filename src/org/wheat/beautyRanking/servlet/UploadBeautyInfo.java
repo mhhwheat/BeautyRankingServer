@@ -37,7 +37,7 @@ public class UploadBeautyInfo extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		BeautyDetail oneBeauty = new BeautyDetail();
-
+		oneBeauty.setPrivilege(Integer.parseInt(request.getParameter("privilege")));
 		oneBeauty.setTrueName(request.getParameter("beautyName"));
 		oneBeauty.setSchool(request.getParameter("school"));
 		oneBeauty.setAvatarPath(request.getParameter("avatarPath"));
@@ -49,6 +49,7 @@ public class UploadBeautyInfo extends HttpServlet {
 		oneBeauty.setConstellation(request.getParameter("constellation"));
 		oneBeauty.setLat(Double.parseDouble(request.getParameter("lat")));
 		oneBeauty.setLng(Double.parseDouble(request.getParameter("lng")));
+		oneBeauty.setLocationText(request.getParameter("locationText"));
 		MysqlDBHelper dbHelper = MysqlDBHelper.getInstance();
 		int code =dbHelper.uploadNewBeauty(oneBeauty);
 		response.setStatus(code);

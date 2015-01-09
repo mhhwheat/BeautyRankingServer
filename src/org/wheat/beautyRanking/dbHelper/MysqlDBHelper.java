@@ -1014,8 +1014,8 @@ public class MysqlDBHelper
 			conn = ConnectionPool.getInstance().getConnection();
 			String querySql="insert into beauty (avatar_path ,true_name,user_phone_number,"
 					+ "praise_times,school,admission_year,birthday,constellation,description,"
-					+ "create_time,lat,lng) "
-					+ "values (?,?,?,?,?,?,?,?,?,?,?,?)";
+					+ "create_time,lat,lng,privilege,location_text ) "
+					+ "values (?,?,?,?,?,?,?,?,?,?,?,?,?.?)";
 			ps=conn.prepareStatement(querySql);
 			ps.setString(1, oneBeauty.getAvatarPath());
 			ps.setString(2, oneBeauty.getTrueName());
@@ -1030,6 +1030,8 @@ public class MysqlDBHelper
 			ps.setDate(10, DateFormatTools.utilDate2SqlDate(oneBeauty.getCreateTime()));
 			ps.setDouble(11,oneBeauty.getLat());
 			ps.setDouble(12, oneBeauty.getLng());
+			ps.setInt(13, oneBeauty.getPrivilege());
+			ps.setString(14, oneBeauty.getLocationText());
 			insertBeautyCount=ps.executeUpdate();
 
 			
@@ -1211,7 +1213,8 @@ public class MysqlDBHelper
 			conn = ConnectionPool.getInstance().getConnection();
 			
 			String querySql="select beauty_id , avatar_path ,user_phone_number, praise_times ,"
-					+ " school ,admission_year,birthday, constellation,description,create_time  "
+					+ " school ,admission_year,birthday, constellation,description,create_time,"
+					+ "privilege, comment_times,location_text  "
 					+ "from beauty where beauty_id = ?";
 			ps=conn.prepareStatement(querySql);
 			ps.setInt(1, beautyId);
@@ -1230,6 +1233,8 @@ public class MysqlDBHelper
 				temp.setConstellation(rs.getString("constellation"));
 				temp.setDescription(rs.getString("description"));
 				temp.setCreateTime(DateFormatTools.sqlDate2UtilDate(rs.getDate("create_time")));
+				temp.setCommentTimes(rs.getInt("comment_times"));
+				temp.setLocationText(rs.getString("location_text"));
 				System.out.println("in the rs.next  "+temp.getCreateTime());
 			}
 			
