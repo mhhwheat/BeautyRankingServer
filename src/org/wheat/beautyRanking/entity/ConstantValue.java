@@ -18,7 +18,8 @@ package org.wheat.beautyRanking.entity;
 *
  */
 public class ConstantValue {
-	public static String HttpRoot="http://192.168.235.107:8080/BeautyRankingServer/";
+//	public static String HttpRoot="http://192.168.235.107:8080/BeautyRankingServer/";
+	public static String HttpRoot="http://127.0.0.1:8080/BeautyRankingServer/";
 	public static final String AVATAR_DIRECTORY="D:/BeautyRankingPhoto/avatar/";
 	/**
 	 * 失败的人生有千百种，成功的人生只有一种（更新失败）
